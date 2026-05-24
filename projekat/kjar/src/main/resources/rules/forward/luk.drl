@@ -1,0 +1,41 @@
+package com.ftn.sbnz.rules.forward;
+
+import com.ftn.sbnz.model.models.Action;
+import com.ftn.sbnz.model.models.Culture;
+global java.time.LocalDate currentDate;
+
+rule "Luk - Navodnjavanje"
+when
+    $c : Culture(name == "Luk", state == 0)
+    $a : Action(name == "Navodnjavanje", culture == $c)
+then
+    if ($a.getDateDone() != null && !$a.getDateDone().isAfter($a.getDeadline())) {
+        $c.setState(1);
+        System.out.println("Luk: Navodnjavanje obavljeno na vreme. Novi nivo: " + $c.getState());
+    }
+    update($c);
+end
+
+rule "Luk - Primena zaštite"
+when
+    $c : Culture(name == "Luk", state == 1)
+    $a : Action(name == "Primena zaštite", culture == $c)
+then
+    if ($a.getDateDone() != null && !$a.getDateDone().isAfter($a.getDeadline())) {
+        $c.setState(2);
+        System.out.println("Luk: Primena zaštite obavljena na vreme. Novi nivo: " + $c.getState());
+    }
+    update($c);
+end
+
+rule "Luk - Uklanjanje korova"
+when
+    $c : Culture(name == "Luk", state == 2)
+    $a : Action(name == "Uklanjanje korova", culture == $c)
+then
+    if ($a.getDateDone() != null && !$a.getDateDone().isAfter($a.getDeadline())) {
+        $c.setState(3);
+        System.out.println("Luk: Uklanjanje korova obavljeno na vreme. Novi nivo: " + $c.getState());
+    }
+    update($c);
+end
