@@ -1,0 +1,21 @@
+<div class="div">
+    <h1>Login</h1>
+    <form
+      method="POST"
+      [formGroup]="loginForm" 
+      (ngSubmit)="onLogin()"
+    >
+        <input class="element" type="text"  formControlName="username" placeholder="Enter a username" name="username" id="username" required>
+        <br>
+
+        <input class="element" type="password" name="password" formControlName="password" placeholder="Enter a password" id="password" required>
+        <br>
+
+        <button class="loginbtn" (keydown.enter)="onLogin()" type="submit">Login</button>
+    </form>
+
+    <p class="dont_have">
+        Don't have an account?
+        <a routerLink="/register">Create an account</a>
+    </p>
+</div>

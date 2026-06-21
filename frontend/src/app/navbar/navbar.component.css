@@ -1,0 +1,36 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2ea44f;
+    color: white;
+    padding: 16px;
+    top: 0
+  }
+  
+  .left {
+    cursor: pointer;
+  }
+  
+  .right {
+    cursor: pointer;
+  }
+  
+  .right {
+    margin-right: 10px;
+  }
+
+  .space
+  {
+    margin-left: 50px;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline
+  }
+  
