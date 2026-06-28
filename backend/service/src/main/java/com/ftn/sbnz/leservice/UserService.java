@@ -1,4 +1,4 @@
-package com.ftn.sbnz.service;
+package com.ftn.sbnz.leservice;
 
 import com.ftn.sbnz.dasmodel.User;
 import com.ftn.sbnz.dto.RegisterRequestDTO;

@@ -1,7 +1,8 @@
 package com.ftn.sbnz.controller;
 
 import com.ftn.sbnz.dto.RegisterRequestDTO;
-import com.ftn.sbnz.service.UserService;
+import com.ftn.sbnz.leservice.UserService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
