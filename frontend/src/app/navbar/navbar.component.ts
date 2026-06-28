@@ -15,50 +15,9 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  goToManageTags() {}
-
-  goToTrending() {}
-
+  goToGarden() {}
+  
   goToReports() {}
-
-  goToRegister() {}
-
-  startSimulation(){
-    this.SystemService.startSystemSimulation().subscribe({
-      next: result => {
-        // alert(result.message);
-        console.log(result.message);
-      },
-      error: err => {
-        console.log(err);
-        alert(err?.error?.message || JSON.stringify(err));
-      }
-    })
-  }
-  stopSimulation(){
-    this.SystemService.stopSystemSimulation().subscribe({
-      next: result => {
-        // alert(result.message);
-        console.log(result.message);
-      },
-      error: err => {
-        console.log(err);
-        alert(err?.error?.message || JSON.stringify(err));
-      }
-    })
-  }
-  restartSimulation(){
-    this.SystemService.restartSystemSimulation().subscribe({
-      next: result => {
-        // alert(result.message);
-        console.log(result.message);
-      },
-      error: err => {
-        console.log(err);
-        alert(err?.error?.message || JSON.stringify(err));
-      }
-    })
-  }
 
   logout() {
     this.UserService.logout().subscribe({
