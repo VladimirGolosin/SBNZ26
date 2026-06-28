@@ -17,6 +17,13 @@ h1 {
   margin-bottom: 20px;
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
 /* inputs */
 .element {
   width: 260px;

@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { createUserDTO, UserDTO } from '../DTOs/UserDTO';
-// import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
-// import { environment } from 'src/environments/environment';
-// import { JwtService } from '../jwt.service';
-// import { HelloService } from '../backend_services/hello.service';
-// import { CognitoService } from '../backend_services/cognito.service';
+import { CreateUserDTO } from '../DTOs/CreateUserDTO';
 
 @Component({
   selector: 'app-registration',
@@ -16,65 +11,66 @@ import { createUserDTO, UserDTO } from '../DTOs/UserDTO';
 })
 export class RegistrationComponent implements OnInit {
 
-  isLoading: boolean = false;
-  username: string = "";
-  password: string = "";
   registerForm!: FormGroup;
-  isDisabled: boolean = false;
 
-  constructor(private router: Router, private UserService: UserService) { 
-  }
+  constructor(
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    this.registerForm = new FormGroup({
-      username: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
-      btn: new FormControl("")},
-      // { validators: this.check },
+    this.registerForm = new FormGroup(
+      {
+        name: new FormControl('', Validators.required),
+        surname: new FormControl('', Validators.required),
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password_first: new FormControl('', Validators.required),
+        password_second: new FormControl('', Validators.required),
+      },
+      { validators: this.passwordMatchValidator }
     );
   }
 
+  passwordMatchValidator(control: AbstractControl) {
+    const pass = control.get('password_first')?.value;
+    const repeat = control.get('password_second')?.value;
+
+    if (!pass || !repeat) {
+      return null;
+    }
+
+    return pass === repeat ? null : { passwordMismatch: true };
+  }
+
   onRegister() {
-    this.username = this.registerForm.get('username')?.value;
-    this.password = this.registerForm.get('password')?.value
-    let newUser = createUserDTO(this.username, this.password);
-    // console.log(this.username);
-    // console.log(this.password);
-    // this.router.navigate(['trending']) //.then(()=>{location.reload();});
-    this.UserService.register(newUser).subscribe({
-      next: result => {
-        alert(result.message);
-        // console.log(result.message);
+    if (this.registerForm.invalid) {
+      alert('Form is invalid');
+      return;
+    }
+
+    if (this.registerForm.errors?.['passwordMismatch']) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    const form = this.registerForm.value;
+
+    const newUser: CreateUserDTO = {
+      name: form.name,
+      surname: form.surname,
+      email: form.email,
+      password: form.password_first
+    };
+
+    this.userService.register(newUser).subscribe({
+      next: () => {
+        alert('Registration successful');
+        this.router.navigate(['/login']);
       },
-      error: err => {
+      error: (err) => {
         console.log(err);
-        alert(err?.error?.message || JSON.stringify(err));
+        alert(err?.error?.message || 'Registration failed');
       }
-
-    })
+    });
   }
-
-  check(control: AbstractControl) {
-    const usernameRegex = /^[a-zA-Z0-9]+$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])(?=.*[^\s]).{8,}$/;
-    const password = control.get('password');
-    const isValidPassword = passwordRegex.test(password?.value);
-    const cmail = control.get('username');
-    const isValidUsername = usernameRegex.test(cmail?.value);
-    if (isValidUsername /*&& isValidPassword*/) {
-      this.isDisabled = false;
-    } else {
-      this.isDisabled = true;
-    }
-    const errors: { [key: string]: any } = {};
-    if (!isValidUsername) {
-      errors['validUsername'] = true;
-    }
-    if (!isValidPassword) {
-      errors['validPassword'] = true;
-    }
-    return Object.keys(errors).length > 0 ? errors : null;
-    
-  }
-
 }
