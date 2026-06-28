@@ -1,10 +1,16 @@
 <nav>
-    <div class="left">
-        <span (click)="goToGarden()"><a href="garden">Manage Garden</a></span>
-        <span class="space" (click)="goToReports()"><a href="reports">Reports</a></span>
-    </div>
-    <div class="right">
-      <span class="space" (click)="logout()"><a>Log out</a></span>
-    </div>
-  </nav>
-  
+  <div class="left">
+    <span (click)="goToGarden()"><a>Manage Garden</a></span>
+    <span class="space" (click)="goToReports()"><a>Reports</a></span>
+  </div>
+
+  <div class="right">
+    <span *ngIf="user" class="space">
+      {{ user.name }} {{ user.surname }}
+    </span>
+
+    <span class="space" (click)="logout()">
+      <a>Log out</a>
+    </span>
+  </div>
+</nav>

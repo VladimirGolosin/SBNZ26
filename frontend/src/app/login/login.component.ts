@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { LoginDTO } from '../DTOs/LoginDTO';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private session: SessionService
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         console.log('Login success:', res);
 
-        localStorage.setItem('user', JSON.stringify(res));
+        this.session.setUser(res);
 
         this.router.navigate(['/garden']);
       },
