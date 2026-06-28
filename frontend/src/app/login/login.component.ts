@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
-import {UserDTO, createUserDTO} from '../DTOs/UserDTO';
 import { SystemService } from '../services/system.service';
 // import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 // import { environment } from 'src/environments/environment';
@@ -47,7 +46,7 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
-    this.username = this.loginForm.get('username')?.value;
+    /*this.username = this.loginForm.get('username')?.value;
     this.password = this.loginForm.get('password')?.value
     let newUser = createUserDTO(this.username, this.password);
     // console.log(this.username);
@@ -64,7 +63,7 @@ export class LoginComponent implements OnInit {
         alert(err?.error?.message || JSON.stringify(err));
       }
 
-    })
+    })*/
   }
 
   check(control: AbstractControl) {

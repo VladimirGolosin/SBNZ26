@@ -1,25 +1,21 @@
 <div class="div">
-    <h1>Registration</h1>
-    <form
-      method="POST"
-      [formGroup]="registerForm" 
-      (ngSubmit)="onRegister()"
-    >
-        <input class="element" type="text"  formControlName="email" placeholder="Enter an email address" name="username" id="username" required>
-        <br>
+  <h1>Registration</h1>
 
-        <input class="element" type="password" name="password_first" formControlName="password_first" placeholder="Enter a password" id="password_first" required>
-        <br>
+  <form class="form" [formGroup]="registerForm" (ngSubmit)="onRegister()">
 
-        <input class="element" type="password" name="password_second" formControlName="password_second" placeholder="Repeat the password" id="password_second" required>
-        <br>
+    <input class="element" type="text" formControlName="name" placeholder="Enter your name" required />
+    <input class="element" type="text" formControlName="surname" placeholder="Enter your surname" required />
+    <input class="element" type="email" formControlName="email" placeholder="Enter an email address" required />
 
-        <button (keydown.enter)="onRegister()" type="submit">Register</button>
-    </form>
+    <input class="element" type="password" formControlName="password_first" placeholder="Enter a password" required />
+    <input class="element" type="password" formControlName="password_second" placeholder="Repeat the password" required />
 
-    <p class="already_have">
-        Already have an account?
-        <a routerLink="/login">Login</a>
-    </p>
+    <button type="submit">Register</button>
 
+  </form>
+
+  <p class="already_have">
+    Already have an account?
+    <a routerLink="/login">Login</a>
+  </p>
 </div>

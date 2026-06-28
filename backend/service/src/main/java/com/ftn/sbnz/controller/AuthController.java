@@ -1,8 +1,9 @@
 package com.ftn.sbnz.controller;
 
 import com.ftn.sbnz.dto.RegisterRequestDTO;
+import com.ftn.sbnz.dto.SuccessDTO;
+import com.ftn.sbnz.dto.ErrorDTO;
 import com.ftn.sbnz.leservice.UserService;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequestDTO dto) {
-        userService.register(dto);
-        return ResponseEntity.ok("User registered successfully");
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO dto) {
+
+        try {
+            userService.register(dto);
+            return ResponseEntity.ok(new SuccessDTO("User registered successfully"));
+        }
+        catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ErrorDTO(e.getMessage()));
+        }
     }
 
     @GetMapping("/test")
