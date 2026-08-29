@@ -7,4 +7,17 @@
         <ksession name="cepConfigKsessionPseudoClock" clockType="pseudo"/>
         <ksession name="cepConfigKsessionRealtimeClock" clockType="realtime"/>
     </kbase>
+
+    <kbase name="gardenForwardKbase" packages="garden_forward">
+        <ksession name="gardenForwardKsession"/>
+    </kbase>
+
+
 </kmodule>
+
+
+
+
+
+
+

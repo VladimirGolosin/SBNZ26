@@ -1,5 +1,5 @@
 package cep;
-import  com.ftn.sbnz.model.TransactionEvent;
+import  com.ftn.sbnz.model.reference.TransactionEvent;
 
 declare SuspiciousCustomerEvent
     @role(event)

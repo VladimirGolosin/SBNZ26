@@ -1,0 +1,10 @@
+package garden_forward;
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.CultureStatus;
+
+rule "Crop status OK notification"
+    when
+        $c: Crop(status == CultureStatus.OK)
+    then
+        System.out.println("Crop " + $c.getCultureName() + " is doing fine.");
+end

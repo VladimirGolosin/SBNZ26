@@ -1,4 +1,4 @@
-/*package com.ftn.sbnz.model;
+package com.ftn.sbnz.model.reference;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -117,4 +117,3 @@ public class Item implements Serializable {
     }
 
 }
-*/

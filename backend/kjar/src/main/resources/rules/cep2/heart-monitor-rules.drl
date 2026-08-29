@@ -1,6 +1,6 @@
 package cep2;
-import com.ftn.sbnz.model.HeartAttackEvent;
-import com.ftn.sbnz.model.HeartBeatEvent;
+import com.ftn.sbnz.model.reference.HeartAttackEvent;
+import com.ftn.sbnz.model.reference.HeartBeatEvent;
 
 rule "No heart beat in the last 5 seconds!"
     when

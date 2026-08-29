@@ -1,4 +1,4 @@
-/*package com.ftn.sbnz.model;
+package com.ftn.sbnz.model.reference;
 
 import java.io.Serializable;
 
@@ -15,4 +15,3 @@ public class HeartAttackEvent implements Serializable {
         super();
     }
 }
-*/
