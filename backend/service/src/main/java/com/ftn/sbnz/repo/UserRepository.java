@@ -1,7 +1,8 @@
 package com.ftn.sbnz.repo;
 
-import com.ftn.sbnz.dasmodel.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ftn.sbnz.model.User;
 
 import java.util.Optional;
 

@@ -1,8 +1,8 @@
 package com.ftn.sbnz.leservice;
 
-import com.ftn.sbnz.dasmodel.User;
 import com.ftn.sbnz.dto.RegisterRequestDTO;
 import com.ftn.sbnz.dto.UserDTO;
+import com.ftn.sbnz.model.User;
 import com.ftn.sbnz.repo.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

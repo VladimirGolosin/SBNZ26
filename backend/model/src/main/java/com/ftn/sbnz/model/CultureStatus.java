@@ -1,4 +1,4 @@
-package com.ftn.sbnz.dasmodel;
+package com.ftn.sbnz.model;
 
 public enum CultureStatus {
     OK,

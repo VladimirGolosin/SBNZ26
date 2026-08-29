@@ -1,4 +1,4 @@
-package com.ftn.sbnz.model;
+/*package com.ftn.sbnz.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -55,3 +55,4 @@ public class TransactionEvent implements Serializable {
     } 
 }
 
+*/

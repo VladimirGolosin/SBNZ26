@@ -5,10 +5,11 @@ import com.ftn.sbnz.dto.SuccessDTO;
 import com.ftn.sbnz.dto.UserDTO;
 import com.ftn.sbnz.dto.ErrorDTO;
 import com.ftn.sbnz.leservice.UserService;
+import com.ftn.sbnz.model.User;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ftn.sbnz.dto.LoginRequestDTO;
-import com.ftn.sbnz.dasmodel.User;
 
 @RestController
 @RequestMapping("/api/auth")
