@@ -1,0 +1,6 @@
+package garden_cep;
+import com.ftn.sbnz.model.WeatherDayInfo;
+
+declare WeatherDayInfo
+    @role( event )
+end

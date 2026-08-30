@@ -1,6 +1,7 @@
 package com.ftn.sbnz.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "weather_day_info")
@@ -13,6 +14,8 @@ public class WeatherDayInfo {
     private double temperature;
 
     private double rainfall;
+
+    private LocalDate date;
 
     public Long getId() {
         return id;
@@ -36,5 +39,13 @@ public class WeatherDayInfo {
 
     public void setRainfall(double rainfall) {
         this.rainfall = rainfall;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }
