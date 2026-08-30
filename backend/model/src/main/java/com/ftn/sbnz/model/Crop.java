@@ -24,15 +24,18 @@ public class Crop {
 
     private int number;
 
+    private boolean needsIrrigation;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    // ignore relations for now
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "crop_id")
     private List<Action> actions = new ArrayList<>();
 
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "crop_id")
     private List<Problem> problems = new ArrayList<>();
 
     public Long getId() {
@@ -83,6 +86,14 @@ public class Crop {
         this.number = number;
     }
 
+    public boolean isNeedsIrrigation() {
+        return needsIrrigation;
+    }
+
+    public void setNeedsIrrigation(boolean needsIrrigation) {
+        this.needsIrrigation = needsIrrigation;
+    }
+
     public User getUser() {
         return user;
     }
@@ -106,6 +117,4 @@ public class Crop {
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
     }
-
-    
 }
