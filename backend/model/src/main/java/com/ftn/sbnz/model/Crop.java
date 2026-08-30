@@ -24,8 +24,6 @@ public class Crop {
 
     private int number;
 
-    private boolean needsIrrigation;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -84,14 +82,6 @@ public class Crop {
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    public boolean isNeedsIrrigation() {
-        return needsIrrigation;
-    }
-
-    public void setNeedsIrrigation(boolean needsIrrigation) {
-        this.needsIrrigation = needsIrrigation;
     }
 
     public User getUser() {

@@ -26,6 +26,12 @@ public class TestingController {
         return ResponseEntity.ok(reading);
     }
 
+    @PostMapping("/advance-day-auto")
+    public ResponseEntity<?> advanceDayAuto() {
+        WeatherDayInfo reading = clockService.advanceOneDayAuto();
+        return ResponseEntity.ok(reading);
+    }
+
     @GetMapping("/status")
     public ResponseEntity<?> status() {
         Map<String, Object> result = new HashMap<>();

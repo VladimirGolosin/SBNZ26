@@ -1,7 +1,7 @@
 package com.ftn.sbnz.model;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "critical_periods")
@@ -11,9 +11,12 @@ public class CriticalPeriod {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date dateFrom;
+    @Enumerated(EnumType.STRING)
+    private CultureName cultureName;
 
-    private Date dateTo;
+    private LocalDate dateFrom;
+
+    private LocalDate dateTo;
 
     public Long getId() {
         return id;
@@ -23,19 +26,27 @@ public class CriticalPeriod {
         this.id = id;
     }
 
-    public Date getDateFrom() {
+    public CultureName getCultureName() {
+        return cultureName;
+    }
+
+    public void setCultureName(CultureName cultureName) {
+        this.cultureName = cultureName;
+    }
+
+    public LocalDate getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(Date dateFrom) {
+    public void setDateFrom(LocalDate dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public Date getDateTo() {
+    public LocalDate getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(Date dateTo) {
+    public void setDateTo(LocalDate dateTo) {
         this.dateTo = dateTo;
     }
 }

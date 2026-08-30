@@ -15,15 +15,22 @@ public class ClockService {
 
     private final KieContainer kieContainer;
     private final WeatherDayInfoService weatherDayInfoService;
+    private final WeatherSimulationService weatherSimulationService;
+    private final CriticalPeriodTrackerService criticalPeriodTrackerService;
 
     private KieSession kSession;
     private SessionPseudoClock clock;
     private LocalDate currentDate;
     private WeatherDayInfo lastReading;
 
-    public ClockService(KieContainer kieContainer, WeatherDayInfoService weatherDayInfoService) {
+    public ClockService(KieContainer kieContainer,
+                         WeatherDayInfoService weatherDayInfoService,
+                         WeatherSimulationService weatherSimulationService,
+                         CriticalPeriodTrackerService criticalPeriodTrackerService) {
         this.kieContainer = kieContainer;
         this.weatherDayInfoService = weatherDayInfoService;
+        this.weatherSimulationService = weatherSimulationService;
+        this.criticalPeriodTrackerService = criticalPeriodTrackerService;
     }
 
     @PostConstruct
@@ -39,6 +46,7 @@ public class ClockService {
         clock = kSession.getSessionClock();
         currentDate = LocalDate.now();
         lastReading = null;
+        criticalPeriodTrackerService.reset();
     }
 
     public WeatherDayInfo advanceOneDay(double temperature, double rainfall) {
@@ -52,6 +60,11 @@ public class ClockService {
 
         lastReading = reading;
         return reading;
+    }
+
+    public WeatherDayInfo advanceOneDayAuto() {
+        double[] values = weatherSimulationService.generateNextReading(currentDate.plusDays(1));
+        return advanceOneDay(values[0], values[1]);
     }
 
     public LocalDate getCurrentDate() {
