@@ -38,7 +38,7 @@ public class ClockService {
         reset();
     }
 
-    public void reset() {
+        public void reset() {
         if (kSession != null) {
             kSession.dispose();
         }
@@ -47,6 +47,7 @@ public class ClockService {
         currentDate = LocalDate.now();
         lastReading = null;
         criticalPeriodTrackerService.reset();
+        weatherSimulationService.reset();
     }
 
     public WeatherDayInfo advanceOneDay(double temperature, double rainfall) {
