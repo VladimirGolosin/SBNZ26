@@ -23,4 +23,8 @@ public class CriticalPeriodService {
         period.setDateTo(dateTo);
         return repository.save(period);
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }
