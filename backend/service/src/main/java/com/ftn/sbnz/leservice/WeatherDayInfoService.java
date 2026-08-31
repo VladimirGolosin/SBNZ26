@@ -5,6 +5,8 @@ import com.ftn.sbnz.repo.WeatherDayInfoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class WeatherDayInfoService {
@@ -21,5 +23,15 @@ public class WeatherDayInfoService {
         reading.setRainfall(rainfall);
         reading.setDate(date);
         return repository.save(reading);
+    }
+
+    public List<WeatherDayInfo> getLastSevenDaysAscending() {
+        List<WeatherDayInfo> lastSeven = repository.findTop7ByOrderByDateDesc();
+        Collections.reverse(lastSeven);
+        return lastSeven;
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

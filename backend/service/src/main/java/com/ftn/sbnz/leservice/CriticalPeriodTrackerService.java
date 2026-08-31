@@ -1,6 +1,9 @@
 package com.ftn.sbnz.leservice;
 
+import com.ftn.sbnz.model.CriticalPeriodStatus;
 import com.ftn.sbnz.model.CultureName;
+import com.ftn.sbnz.repo.CriticalPeriodStatusRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,10 +19,23 @@ public class CriticalPeriodTrackerService {
     }
 
     private final CriticalPeriodService criticalPeriodService;
+    private final CriticalPeriodStatusRepository statusRepository;
     private final Map<CultureName, Status> statusMap = new EnumMap<>(CultureName.class);
 
-    public CriticalPeriodTrackerService(CriticalPeriodService criticalPeriodService) {
+    public CriticalPeriodTrackerService(CriticalPeriodService criticalPeriodService,
+                                         CriticalPeriodStatusRepository statusRepository) {
         this.criticalPeriodService = criticalPeriodService;
+        this.statusRepository = statusRepository;
+    }
+
+    public void loadFromDb() {
+        statusMap.clear();
+        for (CriticalPeriodStatus entity : statusRepository.findAll()) {
+            Status status = new Status();
+            status.critical = entity.isCritical();
+            status.since = entity.getSince();
+            statusMap.put(entity.getCultureName(), status);
+        }
     }
 
     public void updateCulture(CultureName culture, boolean criticalToday, LocalDate currentDate) {
@@ -37,6 +53,16 @@ public class CriticalPeriodTrackerService {
                 status.since = null;
             }
         }
+
+        persist(culture, status);
+    }
+
+    private void persist(CultureName culture, Status status) {
+        CriticalPeriodStatus entity = statusRepository.findById(culture).orElse(new CriticalPeriodStatus());
+        entity.setCultureName(culture);
+        entity.setCritical(status.critical);
+        entity.setSince(status.since);
+        statusRepository.save(entity);
     }
 
     public boolean isCritical(CultureName culture) {
@@ -51,5 +77,6 @@ public class CriticalPeriodTrackerService {
 
     public void reset() {
         statusMap.clear();
+        statusRepository.deleteAll();
     }
 }

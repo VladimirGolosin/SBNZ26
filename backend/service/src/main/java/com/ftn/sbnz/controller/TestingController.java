@@ -6,9 +6,12 @@ import com.ftn.sbnz.leservice.PredefinedWeatherService;
 import com.ftn.sbnz.leservice.WeatherModeService;
 import com.ftn.sbnz.leservice.WeatherSimulationService;
 import com.ftn.sbnz.model.WeatherDayInfo;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,9 +75,15 @@ public class TestingController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/reset")
-    public ResponseEntity<?> reset() {
-        clockService.reset();
-        return ResponseEntity.ok("Clock reset");
+    @PostMapping("/wipe-and-restart")
+    public ResponseEntity<?> wipeAndRestart() {
+        clockService.wipeAndRestart();
+        return ResponseEntity.ok("Wiped and restarted at today's date");
+    }
+
+    @PostMapping("/wipe-and-start-at")
+    public ResponseEntity<?> wipeAndStartAt(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        clockService.wipeAndStartAt(date);
+        return ResponseEntity.ok("Wiped and started at " + date);
     }
 }
