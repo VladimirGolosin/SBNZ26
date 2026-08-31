@@ -74,13 +74,15 @@ public class WeatherSimulationService {
 
     public double[] generateNextReading(LocalDate date) {
         Month month = date.getMonth();
-        ProfileModifier modifier = profileModifiers.get(activeProfile);
 
-        double temperature = OPTIMAL_TEMPERATURE + seasonalTemperatureOffset(month) + modifier.temperatureOffset
+        double temperature = OPTIMAL_TEMPERATURE + seasonalTemperatureOffset(month)
                 + (random.nextDouble() * 2 - 1) * 2.0;
 
-        double rainfall = Math.max(0, DAILY_RAINFALL_BASE * seasonalRainfallMultiplier(month) * modifier.rainfallMultiplier
+        double rainfall = Math.max(0, DAILY_RAINFALL_BASE * seasonalRainfallMultiplier(month)
                 + (random.nextDouble() * 2 - 1) * 1.5);
+
+        temperature = Math.round(temperature * 1000.0) / 1000.0;
+        rainfall = Math.round(rainfall * 1000.0) / 1000.0;
 
         return new double[] { temperature, rainfall };
     }
