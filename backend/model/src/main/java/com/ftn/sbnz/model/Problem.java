@@ -1,7 +1,7 @@
 package com.ftn.sbnz.model;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "problems")
@@ -14,11 +14,11 @@ public class Problem {
     @Enumerated(EnumType.STRING)
     private ProblemName name;
 
-    private Date appeared;
+    private LocalDate appeared;
 
-    private Date addressed;
+    private LocalDate addressed;
 
-    private Date finalized;
+    private LocalDate finalized;
 
     @Enumerated(EnumType.STRING)
     private SolutionName providedSolution;
@@ -39,27 +39,27 @@ public class Problem {
         this.name = name;
     }
 
-    public Date getAppeared() {
+    public LocalDate getAppeared() {
         return appeared;
     }
 
-    public void setAppeared(Date appeared) {
+    public void setAppeared(LocalDate appeared) {
         this.appeared = appeared;
     }
 
-    public Date getAddressed() {
+    public LocalDate getAddressed() {
         return addressed;
     }
 
-    public void setAddressed(Date addressed) {
+    public void setAddressed(LocalDate addressed) {
         this.addressed = addressed;
     }
 
-    public Date getFinalized() {
+    public LocalDate getFinalized() {
         return finalized;
     }
 
-    public void setFinalized(Date finalized) {
+    public void setFinalized(LocalDate finalized) {
         this.finalized = finalized;
     }
 

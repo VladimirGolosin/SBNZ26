@@ -1,7 +1,7 @@
 package com.ftn.sbnz.model;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "actions")
@@ -14,7 +14,7 @@ public class Action {
     @Enumerated(EnumType.STRING)
     private ActionName name;
 
-    private Date done;
+    private LocalDate done;
 
     public Long getId() {
         return id;
@@ -32,11 +32,11 @@ public class Action {
         this.name = name;
     }
 
-    public Date getDone() {
+    public LocalDate getDone() {
         return done;
     }
 
-    public void setDone(Date done) {
+    public void setDone(LocalDate done) {
         this.done = done;
     }
 }

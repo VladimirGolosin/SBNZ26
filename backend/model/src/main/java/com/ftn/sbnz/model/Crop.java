@@ -28,11 +28,12 @@ public class Crop {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // ignore relations for now
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "crop_id")
     private List<Action> actions = new ArrayList<>();
 
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "crop_id")
     private List<Problem> problems = new ArrayList<>();
 
     public Long getId() {
@@ -106,6 +107,4 @@ public class Crop {
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
     }
-
-    
 }
