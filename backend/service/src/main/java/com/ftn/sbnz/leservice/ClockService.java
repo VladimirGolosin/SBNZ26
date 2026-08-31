@@ -17,6 +17,8 @@ public class ClockService {
     private final WeatherDayInfoService weatherDayInfoService;
     private final WeatherSimulationService weatherSimulationService;
     private final CriticalPeriodTrackerService criticalPeriodTrackerService;
+    private final PredefinedWeatherService predefinedWeatherService;
+    private final WeatherModeService weatherModeService;
 
     private KieSession kSession;
     private SessionPseudoClock clock;
@@ -26,11 +28,15 @@ public class ClockService {
     public ClockService(KieContainer kieContainer,
                          WeatherDayInfoService weatherDayInfoService,
                          WeatherSimulationService weatherSimulationService,
-                         CriticalPeriodTrackerService criticalPeriodTrackerService) {
+                         CriticalPeriodTrackerService criticalPeriodTrackerService,
+                         PredefinedWeatherService predefinedWeatherService,
+                         WeatherModeService weatherModeService) {
         this.kieContainer = kieContainer;
         this.weatherDayInfoService = weatherDayInfoService;
         this.weatherSimulationService = weatherSimulationService;
         this.criticalPeriodTrackerService = criticalPeriodTrackerService;
+        this.predefinedWeatherService = predefinedWeatherService;
+        this.weatherModeService = weatherModeService;
     }
 
     @PostConstruct
@@ -38,7 +44,7 @@ public class ClockService {
         reset();
     }
 
-        public void reset() {
+    public void reset() {
         if (kSession != null) {
             kSession.dispose();
         }
@@ -48,6 +54,7 @@ public class ClockService {
         lastReading = null;
         criticalPeriodTrackerService.reset();
         weatherSimulationService.reset();
+        weatherModeService.reset();
     }
 
     public WeatherDayInfo advanceOneDay(double temperature, double rainfall) {
@@ -64,7 +71,15 @@ public class ClockService {
     }
 
     public WeatherDayInfo advanceOneDayAuto() {
-        double[] values = weatherSimulationService.generateNextReading(currentDate.plusDays(1));
+        LocalDate nextDate = currentDate.plusDays(1);
+
+        double[] values;
+        if (weatherModeService.getMode() == WeatherModeService.Mode.PREDEFINED) {
+            values = predefinedWeatherService.getReading(nextDate.getDayOfYear());
+        } else {
+            values = weatherSimulationService.generateNextReading(nextDate);
+        }
+
         return advanceOneDay(values[0], values[1]);
     }
 
