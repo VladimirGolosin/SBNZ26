@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface CropRepository extends JpaRepository<Crop, Long> {
 
-    List<Crop> findByStatusNotIn(List<CultureStatus> statuses);
+    List<Crop> findByStatusIn(List<CultureStatus> statuses);
 }

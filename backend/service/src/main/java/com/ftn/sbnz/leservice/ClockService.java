@@ -156,14 +156,21 @@ public class ClockService {
         }
 
         return advanceOneDay(values[0], values[1]);
+
     }
 
-    public void advanceSlow(int days) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        public void advanceDays(int days) {
+        for (int i = 0; i < days; i++) {
+            advanceOneDayAuto();
+        }
     }
 
-    public void advanceFast(LocalDate targetDate) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void advanceToDate(LocalDate targetDate) {
+        long days = java.time.temporal.ChronoUnit.DAYS.between(currentDate, targetDate);
+        if (days < 0) {
+            throw new IllegalArgumentException("Target date is in the past relative to current simulated date");
+        }
+        advanceDays((int) days);
     }
 
     @Scheduled(cron = "0 0 0 * * *")

@@ -4,13 +4,19 @@ import com.ftn.sbnz.dto.CropStateDTO;
 import com.ftn.sbnz.dto.WeatherInputDTO;
 import com.ftn.sbnz.leservice.ClockService;
 import com.ftn.sbnz.leservice.CropRuleEvaluationService;
+import com.ftn.sbnz.leservice.CropService;
 import com.ftn.sbnz.leservice.PredefinedWeatherService;
 import com.ftn.sbnz.leservice.WeatherModeService;
 import com.ftn.sbnz.leservice.WeatherSimulationService;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
 import com.ftn.sbnz.model.Crop;
 import com.ftn.sbnz.model.CultureName;
 import com.ftn.sbnz.model.CultureStatus;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.ProblemName;
 import com.ftn.sbnz.model.WeatherDayInfo;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,17 +34,20 @@ public class TestingController {
     private final WeatherModeService weatherModeService;
     private final PredefinedWeatherService predefinedWeatherService;
     private final CropRuleEvaluationService cropRuleEvaluationService;
+    private final CropService cropService;
 
     public TestingController(ClockService clockService,
                               WeatherSimulationService weatherSimulationService,
                               WeatherModeService weatherModeService,
                               PredefinedWeatherService predefinedWeatherService,
-                              CropRuleEvaluationService cropRuleEvaluationService) {
+                              CropRuleEvaluationService cropRuleEvaluationService,
+                              CropService cropService) {
         this.clockService = clockService;
         this.weatherSimulationService = weatherSimulationService;
         this.weatherModeService = weatherModeService;
         this.predefinedWeatherService = predefinedWeatherService;
         this.cropRuleEvaluationService = cropRuleEvaluationService;
+        this.cropService = cropService;
     }
 
     @PostMapping("/advance-day")
@@ -88,7 +97,7 @@ public class TestingController {
     }
 
     @PostMapping("/wipe-and-start-at")
-    public ResponseEntity<?> wipeAndStartAt(@RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) LocalDate date) {
+    public ResponseEntity<?> wipeAndStartAt(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         clockService.wipeAndStartAt(date);
         return ResponseEntity.ok("Wiped and started at " + date);
     }
@@ -105,4 +114,60 @@ public class TestingController {
         CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/plant-crop")
+    public ResponseEntity<?> plantCrop(@RequestParam CultureName culture) {
+        Crop crop = new Crop();
+        crop.setCultureName(culture);
+        crop.setStatus(CultureStatus.OK);
+        crop.setLevel(1);
+        crop.setSize(10);
+        crop.setNumber(5);
+        Crop saved = cropService.save(crop);
+        return ResponseEntity.ok(saved.getId());
+    }
+
+    @PostMapping("/log-action")
+    public ResponseEntity<?> logAction(@RequestParam Long cropId,
+                                        @RequestParam ActionName action,
+                                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        Action newAction = new Action();
+        newAction.setName(action);
+        newAction.setDone(date);
+        crop.getActions().add(newAction);
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/report-problem")
+    public ResponseEntity<?> reportProblem(@RequestParam Long cropId, @RequestParam ProblemName problem) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        Problem newProblem = new Problem();
+        newProblem.setName(problem);
+        newProblem.setAppeared(clockService.getCurrentDate());
+        crop.getProblems().add(newProblem);
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/crop/{id}")
+    public ResponseEntity<?> getCrop(@PathVariable Long id) {
+        Crop crop = cropService.findById(id).orElseThrow();
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/advance-days")
+    public ResponseEntity<?> advanceDays(@RequestParam int days) {
+        clockService.advanceDays(days);
+        return ResponseEntity.ok(clockService.getCurrentDate());
+    }
+
+    @PostMapping("/advance-to-date")
+    public ResponseEntity<?> advanceToDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        clockService.advanceToDate(date);
+        return ResponseEntity.ok(clockService.getCurrentDate());
+    }
+
 }

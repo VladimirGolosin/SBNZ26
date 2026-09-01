@@ -6,6 +6,7 @@ import com.ftn.sbnz.repo.CropRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CropService {
@@ -20,13 +21,12 @@ public class CropService {
         return repository.save(crop);
     }
 
+    public Optional<Crop> findById(Long id) {
+        return repository.findById(id);
+    }
+
     public List<Crop> findActiveCrops() {
-        return repository.findByStatusNotIn(List.of(
-                CultureStatus.FAILED,
-                CultureStatus.COLLECTED,
-                CultureStatus.INF_COLLECTED,
-                CultureStatus.ABANDONED
-        ));
+        return repository.findByStatusIn(List.of(CultureStatus.OK, CultureStatus.INF));
     }
 
     public void deleteAll() {
