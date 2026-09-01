@@ -10,6 +10,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.EnumMap;
@@ -51,6 +52,7 @@ public class CriticalPeriodTrackerService implements CriticalPeriodUpdater {
     }
 
     @Override
+    @Transactional
     public void updateCulture(CultureName culture, boolean criticalToday, LocalDate currentDate) {
         Status status = statusMap.computeIfAbsent(culture, c -> new Status());
 
