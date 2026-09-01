@@ -13,6 +13,11 @@ rule "Onion: critical time detected"
             $w: WeatherDayInfo() over window:time(7d),
             average($w.getRainfall())
         )
+        $count: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            count($w)
+        )
+        eval( $count.intValue() >= 7 )
         eval( $avgTemp.doubleValue() >= cultureThresholdProvider.getOptimalTemperature(CultureName.ONION) * 1.5 )
         eval( $avgRain.doubleValue() < cultureThresholdProvider.getOptimalWeeklyRainfall(CultureName.ONION) / 7 * 0.75 )
     then
@@ -29,7 +34,12 @@ rule "Onion: critical time ended"
             $w: WeatherDayInfo() over window:time(7d),
             average($w.getRainfall())
         )
-        eval( !( $avgTemp.doubleValue() >= cultureThresholdProvider.getOptimalTemperature(CultureName.ONION) * 1.5
+        $count: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            count($w)
+        )
+        eval( !( $count.intValue() >= 7
+                 && $avgTemp.doubleValue() >= cultureThresholdProvider.getOptimalTemperature(CultureName.ONION) * 1.5
                  && $avgRain.doubleValue() < cultureThresholdProvider.getOptimalWeeklyRainfall(CultureName.ONION) / 7 * 0.75 ) )
     then
         criticalPeriodUpdater.updateCulture(CultureName.ONION, false, currentDate);

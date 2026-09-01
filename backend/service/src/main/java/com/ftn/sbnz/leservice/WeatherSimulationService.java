@@ -38,7 +38,7 @@ public class WeatherSimulationService {
 
     public WeatherSimulationService() {
         profileModifiers.put(Profile.NORMAL, new ProfileModifier(0.0, 1.0));
-        profileModifiers.put(Profile.DROUGHT, new ProfileModifier(8.0, 0.1));
+        profileModifiers.put(Profile.DROUGHT, new ProfileModifier(18.0, 0.05));
         profileModifiers.put(Profile.RAINY, new ProfileModifier(-3.0, 1.8));
     }
 
@@ -74,11 +74,12 @@ public class WeatherSimulationService {
 
     public double[] generateNextReading(LocalDate date) {
         Month month = date.getMonth();
+        ProfileModifier modifier = profileModifiers.get(activeProfile);
 
-        double temperature = OPTIMAL_TEMPERATURE + seasonalTemperatureOffset(month)
+        double temperature = OPTIMAL_TEMPERATURE + seasonalTemperatureOffset(month) + modifier.temperatureOffset
                 + (random.nextDouble() * 2 - 1) * 2.0;
 
-        double rainfall = Math.max(0, DAILY_RAINFALL_BASE * seasonalRainfallMultiplier(month)
+        double rainfall = Math.max(0, DAILY_RAINFALL_BASE * seasonalRainfallMultiplier(month) * modifier.rainfallMultiplier
                 + (random.nextDouble() * 2 - 1) * 1.5);
 
         temperature = Math.round(temperature * 1000.0) / 1000.0;
