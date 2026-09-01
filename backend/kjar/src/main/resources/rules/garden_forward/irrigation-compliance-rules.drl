@@ -12,11 +12,11 @@ rule "Irrigation compliance check"
         $range: CriticalPeriodRange()
         $c: Crop(isActive())
         $irrigatedDays: Number() from accumulate(
-            Action(name == ActionName.IRRIGATION, done != null,
-                   done >= $range.dateFrom, done <= $range.dateTo) from $c.actions,
+            $a: Action(name == ActionName.IRRIGATION, done != null,
+                       done >= $range.getDateFrom(), done <= $range.getDateTo()) from $c.actions,
             count($a)
         )
-        eval( ((double) $irrigatedDays.intValue() / (ChronoUnit.DAYS.between($range.dateFrom, $range.dateTo) + 1)) < 0.70 )
+        eval( ((double) $irrigatedDays.intValue() / (ChronoUnit.DAYS.between($range.getDateFrom(), $range.getDateTo()) + 1)) < 0.70 )
     then
         modify($c) { setStatus(CultureStatus.INF) }
 end
