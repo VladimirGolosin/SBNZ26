@@ -1,5 +1,6 @@
 package com.ftn.sbnz.leservice;
 
+import com.ftn.sbnz.model.Crop;
 import com.ftn.sbnz.model.WeatherDayInfo;
 import org.drools.core.time.SessionPseudoClock;
 import org.kie.api.runtime.KieContainer;
@@ -25,6 +26,7 @@ public class ClockService {
     private final WeatherModeService weatherModeService;
     private final SimulationStateService simulationStateService;
     private final CropService cropService;
+    private final CropRuleEvaluationService cropRuleEvaluationService;
 
     private KieSession kSession;
     private SessionPseudoClock clock;
@@ -39,7 +41,8 @@ public class ClockService {
                          PredefinedWeatherService predefinedWeatherService,
                          WeatherModeService weatherModeService,
                          SimulationStateService simulationStateService,
-                         CropService cropService) {
+                         CropService cropService,
+                         CropRuleEvaluationService cropRuleEvaluationService) {
         this.kieContainer = kieContainer;
         this.weatherDayInfoService = weatherDayInfoService;
         this.weatherSimulationService = weatherSimulationService;
@@ -49,6 +52,7 @@ public class ClockService {
         this.weatherModeService = weatherModeService;
         this.simulationStateService = simulationStateService;
         this.cropService = cropService;
+        this.cropRuleEvaluationService = cropRuleEvaluationService;
     }
 
     @PostConstruct
@@ -128,8 +132,10 @@ public class ClockService {
     }
 
     private void checkCropNeglect() {
-        // TODO: forward-chaining checks for the three INF triggers
-        // (irrigation compliance, unresolved problems, growth-stage neglect)
+        List<Crop> activeCrops = cropService.findActiveCrops();
+        for (Crop crop : activeCrops) {
+            cropRuleEvaluationService.evaluateCropRules(crop, currentDate);
+        }
     }
 
     public WeatherDayInfo advanceOneDayAuto() {
