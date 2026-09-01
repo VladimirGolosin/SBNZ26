@@ -162,6 +162,17 @@ public class TestingController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/collect-crop")
+    public ResponseEntity<?> collectCrop(@RequestParam Long cropId) {
+        try {
+            Crop crop = cropService.collectCrop(cropId, clockService.getCurrentDate());
+            CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/crop/{id}")
     public ResponseEntity<?> getCrop(@PathVariable Long id) {
         Crop crop = cropService.findById(id).orElseThrow();

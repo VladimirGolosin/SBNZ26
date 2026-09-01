@@ -71,7 +71,7 @@ end
 
 rule "Onion: downy mildew reported"
     when
-        Crop(cultureName == CultureName.ONION, $problems: problems)
+        Crop(cultureName == CultureName.ONION, isActive(), $problems: problems)
         $p: Problem(name == ProblemName.DOWNY_MILDEW, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
@@ -80,7 +80,7 @@ end
 
 rule "Onion: onion fly reported"
     when
-        Crop(cultureName == CultureName.ONION, $problems: problems)
+        Crop(cultureName == CultureName.ONION, isActive(), $problems: problems)
         $p: Problem(name == ProblemName.ONION_FLY, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }

@@ -5,6 +5,8 @@ import com.ftn.sbnz.model.CultureStatus;
 import com.ftn.sbnz.repo.CropRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +14,11 @@ import java.util.Optional;
 public class CropService {
 
     private final CropRepository repository;
+    private final CultureReferenceService cultureReferenceService;
 
-    public CropService(CropRepository repository) {
+    public CropService(CropRepository repository, CultureReferenceService cultureReferenceService) {
         this.repository = repository;
+        this.cultureReferenceService = cultureReferenceService;
     }
 
     public Crop save(Crop crop) {
@@ -27,6 +31,28 @@ public class CropService {
 
     public List<Crop> findActiveCrops() {
         return repository.findByStatusIn(List.of(CultureStatus.OK, CultureStatus.INF));
+    }
+
+    public Crop collectCrop(Long cropId, LocalDate currentDate) {
+        Crop crop = repository.findById(cropId)
+                .orElseThrow(() -> new IllegalArgumentException("Crop not found: " + cropId));
+
+        if (!crop.isActive()) {
+            throw new IllegalStateException("Crop is not active and cannot be collected (current status: " + crop.getStatus() + ")");
+        }
+
+        Month harvestMonth = cultureReferenceService.getHarvestMonth(crop.getCultureName());
+        if (currentDate.getMonth().compareTo(harvestMonth) < 0) {
+            throw new IllegalStateException("Crop cannot be collected before its harvest month (" + harvestMonth + ")");
+        }
+
+        if (crop.getStatus() == CultureStatus.INF) {
+            crop.setStatus(CultureStatus.INF_COLLECTED);
+        } else {
+            crop.setStatus(CultureStatus.COLLECTED);
+        }
+
+        return repository.save(crop);
     }
 
     public void deleteAll() {
