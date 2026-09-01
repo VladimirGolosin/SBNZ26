@@ -1,0 +1,8 @@
+package garden_cep;
+
+import com.ftn.sbnz.model.CriticalPeriodUpdater;
+import com.ftn.sbnz.model.CultureThresholdProvider;
+
+global java.time.LocalDate currentDate;
+global CriticalPeriodUpdater criticalPeriodUpdater;
+global CultureThresholdProvider cultureThresholdProvider;

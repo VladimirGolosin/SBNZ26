@@ -1,6 +1,7 @@
 package com.ftn.sbnz.leservice;
 
 import com.ftn.sbnz.model.CriticalPeriodStatus;
+import com.ftn.sbnz.model.CriticalPeriodUpdater;
 import com.ftn.sbnz.model.CultureName;
 import com.ftn.sbnz.repo.CriticalPeriodStatusRepository;
 
@@ -11,7 +12,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @Service
-public class CriticalPeriodTrackerService {
+public class CriticalPeriodTrackerService implements CriticalPeriodUpdater {
 
     private static class Status {
         boolean critical;
@@ -38,6 +39,7 @@ public class CriticalPeriodTrackerService {
         }
     }
 
+    @Override
     public void updateCulture(CultureName culture, boolean criticalToday, LocalDate currentDate) {
         Status status = statusMap.computeIfAbsent(culture, c -> new Status());
 
