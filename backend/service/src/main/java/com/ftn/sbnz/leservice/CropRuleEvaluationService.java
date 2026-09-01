@@ -16,10 +16,14 @@ public class CropRuleEvaluationService {
 
     private final KieContainer kieContainer;
     private final CropService cropService;
+    private final CriticalPeriodTrackerService criticalPeriodTrackerService;
 
-    public CropRuleEvaluationService(KieContainer kieContainer, CropService cropService) {
+    public CropRuleEvaluationService(KieContainer kieContainer,
+                                      CropService cropService,
+                                      CriticalPeriodTrackerService criticalPeriodTrackerService) {
         this.kieContainer = kieContainer;
         this.cropService = cropService;
+        this.criticalPeriodTrackerService = criticalPeriodTrackerService;
     }
 
     public CropStateDTO evaluateCropRules(Crop crop, LocalDate currentDate) {
@@ -45,6 +49,14 @@ public class CropRuleEvaluationService {
         kSession.dispose();
 
         cropService.save(crop);
+
+        if (crop.isActive() && criticalPeriodTrackerService.isCritical(crop.getCultureName())) {
+            recommendations.add(new Recommendation(
+                    Recommendation.Type.NEEDS_IRRIGATION,
+                    "Kritični period: preporučuje se navodnjavanje.",
+                    com.ftn.sbnz.model.ActionName.IRRIGATION
+            ));
+        }
 
         CropStateDTO dto = new CropStateDTO();
         dto.setId(crop.getId());
