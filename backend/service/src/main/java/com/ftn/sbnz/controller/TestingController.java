@@ -5,6 +5,7 @@ import com.ftn.sbnz.dto.WeatherInputDTO;
 import com.ftn.sbnz.leservice.ClockService;
 import com.ftn.sbnz.leservice.CropRuleEvaluationService;
 import com.ftn.sbnz.leservice.CropService;
+import com.ftn.sbnz.leservice.CultureReferenceService;
 import com.ftn.sbnz.leservice.PredefinedWeatherService;
 import com.ftn.sbnz.leservice.WeatherModeService;
 import com.ftn.sbnz.leservice.WeatherSimulationService;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,19 +37,22 @@ public class TestingController {
     private final PredefinedWeatherService predefinedWeatherService;
     private final CropRuleEvaluationService cropRuleEvaluationService;
     private final CropService cropService;
+    private final CultureReferenceService cultureReferenceService;
 
     public TestingController(ClockService clockService,
                               WeatherSimulationService weatherSimulationService,
                               WeatherModeService weatherModeService,
                               PredefinedWeatherService predefinedWeatherService,
                               CropRuleEvaluationService cropRuleEvaluationService,
-                              CropService cropService) {
+                              CropService cropService,
+                              CultureReferenceService cultureReferenceService) {
         this.clockService = clockService;
         this.weatherSimulationService = weatherSimulationService;
         this.weatherModeService = weatherModeService;
         this.predefinedWeatherService = predefinedWeatherService;
         this.cropRuleEvaluationService = cropRuleEvaluationService;
         this.cropService = cropService;
+        this.cultureReferenceService = cultureReferenceService;
     }
 
     @PostMapping("/advance-day")
@@ -117,6 +122,12 @@ public class TestingController {
 
     @PostMapping("/plant-crop")
     public ResponseEntity<?> plantCrop(@RequestParam CultureName culture) {
+        Month plantingMonth = cultureReferenceService.getPlantingMonth(culture);
+        if (plantingMonth == null || clockService.getCurrentDate().getMonth() != plantingMonth) {
+            return ResponseEntity.badRequest().body(
+                    "Kultura " + culture + " se sadi tokom meseca " + plantingMonth + ", trenutni mesec ne odgovara.");
+        }
+
         Crop crop = new Crop();
         crop.setCultureName(culture);
         crop.setStatus(CultureStatus.OK);
@@ -169,5 +180,4 @@ public class TestingController {
         clockService.advanceToDate(date);
         return ResponseEntity.ok(clockService.getCurrentDate());
     }
-
 }
