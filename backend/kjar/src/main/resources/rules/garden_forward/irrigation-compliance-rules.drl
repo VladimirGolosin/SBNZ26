@@ -1,0 +1,22 @@
+package garden_forward;
+
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
+import com.ftn.sbnz.model.CriticalPeriodRange;
+import com.ftn.sbnz.model.CultureStatus;
+import java.time.temporal.ChronoUnit;
+
+rule "Irrigation compliance check"
+    when
+        $range: CriticalPeriodRange()
+        $c: Crop(isActive())
+        $irrigatedDays: Number() from accumulate(
+            Action(name == ActionName.IRRIGATION, done != null,
+                   done >= $range.dateFrom, done <= $range.dateTo) from $c.actions,
+            count($a)
+        )
+        eval( ((double) $irrigatedDays.intValue() / (ChronoUnit.DAYS.between($range.dateFrom, $range.dateTo) + 1)) < 0.70 )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
