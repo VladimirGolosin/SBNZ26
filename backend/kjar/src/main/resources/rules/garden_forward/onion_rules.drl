@@ -33,7 +33,7 @@ end
 
 rule "Onion: missed weeding deadline -> INF"
     when
-        $c: Crop(cultureName == CultureName.ONION, level == 1, isActive())
+        $c: Crop(cultureName == CultureName.ONION, level == 1, isActive(), status != CultureStatus.INF)
         eval( currentDate.getMonth().compareTo(Month.JUNE) >= 0 )
         not( Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.MAY) from $c.actions )
     then
@@ -42,7 +42,7 @@ end
 
 rule "Onion: missed fertilizing deadline -> INF"
     when
-        $c: Crop(cultureName == CultureName.ONION, level == 2, isActive())
+        $c: Crop(cultureName == CultureName.ONION, level == 2, isActive(), status != CultureStatus.INF)
         eval( currentDate.getMonth().compareTo(Month.JULY) >= 0 )
         not( Action(name == ActionName.FERTILIZATION, done != null, done.month == Month.JUNE) from $c.actions )
     then

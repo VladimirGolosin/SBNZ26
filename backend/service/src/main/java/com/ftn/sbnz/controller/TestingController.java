@@ -173,6 +173,28 @@ public class TestingController {
         }
     }
 
+    @PostMapping("/mark-problem-resolving")
+    public ResponseEntity<?> markProblemResolving(@RequestParam Long cropId, @RequestParam Long problemId) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        crop.getProblems().stream()
+                .filter(p -> p.getId().equals(problemId))
+                .findFirst().orElseThrow()
+                .setAddressed(clockService.getCurrentDate());
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/mark-problem-resolved")
+    public ResponseEntity<?> markProblemResolved(@RequestParam Long cropId, @RequestParam Long problemId) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        crop.getProblems().stream()
+                .filter(p -> p.getId().equals(problemId))
+                .findFirst().orElseThrow()
+                .setFinalized(clockService.getCurrentDate());
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/crop/{id}")
     public ResponseEntity<?> getCrop(@PathVariable Long id) {
         Crop crop = cropService.findById(id).orElseThrow();
