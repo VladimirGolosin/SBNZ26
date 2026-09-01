@@ -8,5 +8,6 @@ public enum ActionName {
     PRUNING,
     HILLING,
     TYING,
-    TREE_WHITEWASHING
+    TREE_WHITEWASHING,
+    COPPER_SULFATE_SPRAY
 }

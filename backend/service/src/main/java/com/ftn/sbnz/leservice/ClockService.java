@@ -1,5 +1,7 @@
 package com.ftn.sbnz.leservice;
 
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.CultureStatus;
 import com.ftn.sbnz.model.WeatherDayInfo;
 import org.drools.core.time.SessionPseudoClock;
 import org.kie.api.runtime.KieContainer;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +28,7 @@ public class ClockService {
     private final WeatherModeService weatherModeService;
     private final SimulationStateService simulationStateService;
     private final CropService cropService;
+    private final CropRuleEvaluationService cropRuleEvaluationService;
 
     private KieSession kSession;
     private SessionPseudoClock clock;
@@ -39,7 +43,8 @@ public class ClockService {
                          PredefinedWeatherService predefinedWeatherService,
                          WeatherModeService weatherModeService,
                          SimulationStateService simulationStateService,
-                         CropService cropService) {
+                         CropService cropService,
+                         CropRuleEvaluationService cropRuleEvaluationService) {
         this.kieContainer = kieContainer;
         this.weatherDayInfoService = weatherDayInfoService;
         this.weatherSimulationService = weatherSimulationService;
@@ -49,6 +54,7 @@ public class ClockService {
         this.weatherModeService = weatherModeService;
         this.simulationStateService = simulationStateService;
         this.cropService = cropService;
+        this.cropRuleEvaluationService = cropRuleEvaluationService;
     }
 
     @PostConstruct
@@ -128,8 +134,15 @@ public class ClockService {
     }
 
     private void checkCropNeglect() {
-        // TODO: forward-chaining checks for the three INF triggers
-        // (irrigation compliance, unresolved problems, growth-stage neglect)
+        List<Crop> activeCrops = cropService.findActiveCrops();
+        for (Crop crop : activeCrops) {
+            if (currentDate.getMonth() == Month.DECEMBER && crop.isActive()) {
+                crop.setStatus(CultureStatus.ABANDONED);
+                cropService.save(crop);
+            } else {
+                cropRuleEvaluationService.evaluateCropRules(crop, currentDate);
+            }
+        }
     }
 
     public WeatherDayInfo advanceOneDayAuto() {
@@ -143,14 +156,21 @@ public class ClockService {
         }
 
         return advanceOneDay(values[0], values[1]);
+
     }
 
-    public void advanceSlow(int days) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        public void advanceDays(int days) {
+        for (int i = 0; i < days; i++) {
+            advanceOneDayAuto();
+        }
     }
 
-    public void advanceFast(LocalDate targetDate) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void advanceToDate(LocalDate targetDate) {
+        long days = java.time.temporal.ChronoUnit.DAYS.between(currentDate, targetDate);
+        if (days < 0) {
+            throw new IllegalArgumentException("Target date is in the past relative to current simulated date");
+        }
+        advanceDays((int) days);
     }
 
     @Scheduled(cron = "0 0 0 * * *")

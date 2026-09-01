@@ -1,0 +1,17 @@
+package garden_forward;
+
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.CultureStatus;
+import java.time.temporal.ChronoUnit;
+
+rule "General: 2+ unresolved problems over 7 days -> INF"
+    when
+        $c: Crop(isActive(), status != CultureStatus.INF, $problems: problems)
+        $count: Number( intValue >= 2 ) from accumulate(
+            $p: Problem(addressed == null, $appeared: appeared, eval(ChronoUnit.DAYS.between($appeared, currentDate) >= 7)) from $problems,
+            count($p)
+        )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end

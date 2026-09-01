@@ -1,17 +1,28 @@
 package com.ftn.sbnz.controller;
 
+import com.ftn.sbnz.dto.CropStateDTO;
 import com.ftn.sbnz.dto.WeatherInputDTO;
 import com.ftn.sbnz.leservice.ClockService;
+import com.ftn.sbnz.leservice.CropRuleEvaluationService;
+import com.ftn.sbnz.leservice.CropService;
+import com.ftn.sbnz.leservice.CultureReferenceService;
 import com.ftn.sbnz.leservice.PredefinedWeatherService;
 import com.ftn.sbnz.leservice.WeatherModeService;
 import com.ftn.sbnz.leservice.WeatherSimulationService;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.CultureName;
+import com.ftn.sbnz.model.CultureStatus;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.ProblemName;
 import com.ftn.sbnz.model.WeatherDayInfo;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,15 +35,24 @@ public class TestingController {
     private final WeatherSimulationService weatherSimulationService;
     private final WeatherModeService weatherModeService;
     private final PredefinedWeatherService predefinedWeatherService;
+    private final CropRuleEvaluationService cropRuleEvaluationService;
+    private final CropService cropService;
+    private final CultureReferenceService cultureReferenceService;
 
     public TestingController(ClockService clockService,
                               WeatherSimulationService weatherSimulationService,
                               WeatherModeService weatherModeService,
-                              PredefinedWeatherService predefinedWeatherService) {
+                              PredefinedWeatherService predefinedWeatherService,
+                              CropRuleEvaluationService cropRuleEvaluationService,
+                              CropService cropService,
+                              CultureReferenceService cultureReferenceService) {
         this.clockService = clockService;
         this.weatherSimulationService = weatherSimulationService;
         this.weatherModeService = weatherModeService;
         this.predefinedWeatherService = predefinedWeatherService;
+        this.cropRuleEvaluationService = cropRuleEvaluationService;
+        this.cropService = cropService;
+        this.cultureReferenceService = cultureReferenceService;
     }
 
     @PostMapping("/advance-day")
@@ -85,5 +105,112 @@ public class TestingController {
     public ResponseEntity<?> wipeAndStartAt(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         clockService.wipeAndStartAt(date);
         return ResponseEntity.ok("Wiped and started at " + date);
+    }
+
+    @PostMapping("/evaluate-test-crop")
+    public ResponseEntity<?> evaluateTestCrop() {
+        Crop crop = new Crop();
+        crop.setCultureName(CultureName.ONION);
+        crop.setStatus(CultureStatus.OK);
+        crop.setLevel(1);
+        crop.setSize(10);
+        crop.setNumber(5);
+
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/plant-crop")
+    public ResponseEntity<?> plantCrop(@RequestParam CultureName culture) {
+        Month plantingMonth = cultureReferenceService.getPlantingMonth(culture);
+        if (plantingMonth == null || clockService.getCurrentDate().getMonth() != plantingMonth) {
+            return ResponseEntity.badRequest().body(
+                    "Kultura " + culture + " se sadi tokom meseca " + plantingMonth + ", trenutni mesec ne odgovara.");
+        }
+
+        Crop crop = new Crop();
+        crop.setCultureName(culture);
+        crop.setStatus(CultureStatus.OK);
+        crop.setLevel(1);
+        crop.setSize(10);
+        crop.setNumber(5);
+        Crop saved = cropService.save(crop);
+        return ResponseEntity.ok(saved.getId());
+    }
+
+    @PostMapping("/log-action")
+    public ResponseEntity<?> logAction(@RequestParam Long cropId,
+                                        @RequestParam ActionName action,
+                                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        Action newAction = new Action();
+        newAction.setName(action);
+        newAction.setDone(date);
+        crop.getActions().add(newAction);
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/report-problem")
+    public ResponseEntity<?> reportProblem(@RequestParam Long cropId, @RequestParam ProblemName problem) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        Problem newProblem = new Problem();
+        newProblem.setName(problem);
+        newProblem.setAppeared(clockService.getCurrentDate());
+        crop.getProblems().add(newProblem);
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/collect-crop")
+    public ResponseEntity<?> collectCrop(@RequestParam Long cropId) {
+        try {
+            Crop crop = cropService.collectCrop(cropId, clockService.getCurrentDate());
+            CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/mark-problem-resolving")
+    public ResponseEntity<?> markProblemResolving(@RequestParam Long cropId, @RequestParam Long problemId) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        crop.getProblems().stream()
+                .filter(p -> p.getId().equals(problemId))
+                .findFirst().orElseThrow()
+                .setAddressed(clockService.getCurrentDate());
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/mark-problem-resolved")
+    public ResponseEntity<?> markProblemResolved(@RequestParam Long cropId, @RequestParam Long problemId) {
+        Crop crop = cropService.findById(cropId).orElseThrow();
+        crop.getProblems().stream()
+                .filter(p -> p.getId().equals(problemId))
+                .findFirst().orElseThrow()
+                .setFinalized(clockService.getCurrentDate());
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/crop/{id}")
+    public ResponseEntity<?> getCrop(@PathVariable Long id) {
+        Crop crop = cropService.findById(id).orElseThrow();
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/advance-days")
+    public ResponseEntity<?> advanceDays(@RequestParam int days) {
+        clockService.advanceDays(days);
+        return ResponseEntity.ok(clockService.getCurrentDate());
+    }
+
+    @PostMapping("/advance-to-date")
+    public ResponseEntity<?> advanceToDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        clockService.advanceToDate(date);
+        return ResponseEntity.ok(clockService.getCurrentDate());
     }
 }

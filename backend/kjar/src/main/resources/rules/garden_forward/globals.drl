@@ -1,0 +1,3 @@
+package garden_forward;
+
+global java.time.LocalDate currentDate;

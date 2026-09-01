@@ -1,0 +1,123 @@
+package garden_forward;
+
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.ProblemName;
+import com.ftn.sbnz.model.SolutionName;
+import com.ftn.sbnz.model.CultureName;
+import com.ftn.sbnz.model.CultureStatus;
+import com.ftn.sbnz.model.Recommendation;
+import java.time.Month;
+
+// ===================== STAGE PROGRESSION =====================
+
+rule "Potato: weeding done -> step 2"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 1, isActive())
+        Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.APRIL) from $c.actions
+    then
+        modify($c) { setLevel(2) }
+end
+
+rule "Potato: hilling done -> step 3"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 2, isActive())
+        Action(name == ActionName.HILLING, done != null, done.month == Month.MAY) from $c.actions
+    then
+        modify($c) { setLevel(3) }
+end
+
+rule "Potato: protection done -> step 4 (final)"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 3, isActive())
+        Action(name == ActionName.PEST_CONTROL, done != null, done.month == Month.JULY) from $c.actions
+    then
+        modify($c) { setLevel(4) }
+end
+
+// ===================== MISSED DEADLINE -> INF =====================
+
+rule "Potato: missed weeding deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 1, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.MAY) >= 0 )
+        not( Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.APRIL) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Potato: missed hilling deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 2, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.JUNE) >= 0 )
+        not( Action(name == ActionName.HILLING, done != null, done.month == Month.MAY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Potato: missed protection deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 3, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.AUGUST) >= 0 )
+        not( Action(name == ActionName.PEST_CONTROL, done != null, done.month == Month.JULY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+// ===================== ACTION DUE REMINDERS =====================
+
+rule "Potato: weeding due reminder"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 1, isActive())
+        eval( currentDate.getMonth() == Month.APRIL )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je ukloniti korov do kraja aprila.", ActionName.WEED_REMOVAL));
+end
+
+rule "Potato: hilling due reminder"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 2, isActive())
+        eval( currentDate.getMonth() == Month.MAY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je izvršiti zagrtanje do kraja maja.", ActionName.HILLING));
+end
+
+rule "Potato: protection due reminder"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, level == 3, isActive())
+        eval( currentDate.getMonth() == Month.JULY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je primeniti zaštitu do kraja jula.", ActionName.PEST_CONTROL));
+end
+
+// ===================== PROBLEM -> SOLUTION RECOMMENDATIONS =====================
+
+rule "Potato: blight reported"
+    when
+        Crop(cultureName == CultureName.POTATO, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.POTATO_BLIGHT, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Prijavljena je plamenjača krompira - preporučena je primena fungicida.", SolutionName.APPLY_FUNGICIDE));
+end
+
+rule "Potato: beetle reported"
+    when
+        Crop(cultureName == CultureName.POTATO, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.COLORADO_POTATO_BEETLE, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Prijavljeno je prisustvo krompirove zlatice - preporučena je primena insekticida.", SolutionName.APPLY_INSECTICIDE));
+end
+
+// ===================== HARVEST RECOMMENDATION =====================
+
+rule "Potato: harvest ready"
+    when
+        $c: Crop(cultureName == CultureName.POTATO, isActive())
+        eval( currentDate.getMonth() == Month.AUGUST )
+    then
+        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "Vreme je za prikupljanje ploda krompira."));
+end
