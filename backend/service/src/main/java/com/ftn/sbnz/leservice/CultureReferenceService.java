@@ -2,6 +2,7 @@ package com.ftn.sbnz.leservice;
 
 import com.ftn.sbnz.model.CultureName;
 import com.ftn.sbnz.model.CultureReference;
+import com.ftn.sbnz.model.CultureThresholdProvider;
 import com.ftn.sbnz.repo.CultureReferenceRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class CultureReferenceService {
+public class CultureReferenceService implements CultureThresholdProvider {
 
     private final CultureReferenceRepository repository;
     private final Map<CultureName, CultureReference> cache = new EnumMap<>(CultureName.class);
@@ -30,10 +31,12 @@ public class CultureReferenceService {
         }
     }
 
+    @Override
     public double getOptimalTemperature(CultureName cultureName) {
         return cache.get(cultureName).getOptimalTemperature();
     }
 
+    @Override
     public double getOptimalWeeklyRainfall(CultureName cultureName) {
         return cache.get(cultureName).getOptimalWeeklyRainfall();
     }

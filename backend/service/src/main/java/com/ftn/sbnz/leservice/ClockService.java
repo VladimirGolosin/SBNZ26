@@ -29,6 +29,7 @@ public class ClockService {
     private final SimulationStateService simulationStateService;
     private final CropService cropService;
     private final CropRuleEvaluationService cropRuleEvaluationService;
+    private final CultureReferenceService cultureReferenceService;
 
     private KieSession kSession;
     private SessionPseudoClock clock;
@@ -44,7 +45,8 @@ public class ClockService {
                          WeatherModeService weatherModeService,
                          SimulationStateService simulationStateService,
                          CropService cropService,
-                         CropRuleEvaluationService cropRuleEvaluationService) {
+                         CropRuleEvaluationService cropRuleEvaluationService,
+                         CultureReferenceService cultureReferenceService) {
         this.kieContainer = kieContainer;
         this.weatherDayInfoService = weatherDayInfoService;
         this.weatherSimulationService = weatherSimulationService;
@@ -55,6 +57,7 @@ public class ClockService {
         this.simulationStateService = simulationStateService;
         this.cropService = cropService;
         this.cropRuleEvaluationService = cropRuleEvaluationService;
+        this.cultureReferenceService = cultureReferenceService;
     }
 
     @PostConstruct
@@ -78,12 +81,15 @@ public class ClockService {
         }
         kSession = kieContainer.newKieSession("gardenCepKsession");
         clock = kSession.getSessionClock();
+        kSession.setGlobal("criticalPeriodUpdater", criticalPeriodTrackerService);
+        kSession.setGlobal("cultureThresholdProvider", cultureReferenceService);
     }
 
     private void backfillLastSevenDays() {
         List<WeatherDayInfo> lastSeven = weatherDayInfoService.getLastSevenDaysAscending();
         for (WeatherDayInfo reading : lastSeven) {
             clock.advanceTime(1, TimeUnit.DAYS);
+            kSession.setGlobal("currentDate", reading.getDate());
             kSession.insert(reading);
             kSession.fireAllRules();
         }
@@ -120,6 +126,7 @@ public class ClockService {
     public WeatherDayInfo advanceOneDay(double temperature, double rainfall) {
         clock.advanceTime(1, TimeUnit.DAYS);
         currentDate = currentDate.plusDays(1);
+        kSession.setGlobal("currentDate", currentDate);
 
         WeatherDayInfo reading = weatherDayInfoService.create(temperature, rainfall, currentDate);
 
@@ -156,10 +163,9 @@ public class ClockService {
         }
 
         return advanceOneDay(values[0], values[1]);
-
     }
 
-        public void advanceDays(int days) {
+    public void advanceDays(int days) {
         for (int i = 0; i < days; i++) {
             advanceOneDayAuto();
         }

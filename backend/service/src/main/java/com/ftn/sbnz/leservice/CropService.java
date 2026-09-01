@@ -1,6 +1,7 @@
 package com.ftn.sbnz.leservice;
 
 import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.CultureName;
 import com.ftn.sbnz.model.CultureStatus;
 import com.ftn.sbnz.repo.CropRepository;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,10 @@ public class CropService {
 
     public List<Crop> findActiveCrops() {
         return repository.findByStatusIn(List.of(CultureStatus.OK, CultureStatus.INF));
+    }
+
+    public List<Crop> findActiveCropsByCulture(CultureName cultureName) {
+        return repository.findByCultureNameAndStatusIn(cultureName, List.of(CultureStatus.OK, CultureStatus.INF));
     }
 
     public Crop collectCrop(Long cropId, LocalDate currentDate) {
