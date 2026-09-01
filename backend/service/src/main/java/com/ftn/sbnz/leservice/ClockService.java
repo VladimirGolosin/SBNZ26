@@ -1,6 +1,7 @@
 package com.ftn.sbnz.leservice;
 
 import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.CultureStatus;
 import com.ftn.sbnz.model.WeatherDayInfo;
 import org.drools.core.time.SessionPseudoClock;
 import org.kie.api.runtime.KieContainer;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -134,7 +136,12 @@ public class ClockService {
     private void checkCropNeglect() {
         List<Crop> activeCrops = cropService.findActiveCrops();
         for (Crop crop : activeCrops) {
-            cropRuleEvaluationService.evaluateCropRules(crop, currentDate);
+            if (currentDate.getMonth() == Month.DECEMBER && crop.isActive()) {
+                crop.setStatus(CultureStatus.ABANDONED);
+                cropService.save(crop);
+            } else {
+                cropRuleEvaluationService.evaluateCropRules(crop, currentDate);
+            }
         }
     }
 

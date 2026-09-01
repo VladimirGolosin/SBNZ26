@@ -4,5 +4,7 @@ public enum CultureStatus {
     OK,
     INF,
     FAILED,
-    COLLECTED
+    COLLECTED,
+    INF_COLLECTED,
+    ABANDONED
 }

@@ -21,7 +21,12 @@ public class CropService {
     }
 
     public List<Crop> findActiveCrops() {
-        return repository.findByStatusNotIn(List.of(CultureStatus.FAILED, CultureStatus.COLLECTED));
+        return repository.findByStatusNotIn(List.of(
+                CultureStatus.FAILED,
+                CultureStatus.COLLECTED,
+                CultureStatus.INF_COLLECTED,
+                CultureStatus.ABANDONED
+        ));
     }
 
     public void deleteAll() {

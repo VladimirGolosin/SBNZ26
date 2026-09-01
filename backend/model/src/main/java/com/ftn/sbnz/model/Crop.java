@@ -107,4 +107,8 @@ public class Crop {
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
     }
+
+    public boolean isActive() {
+        return status == CultureStatus.OK || status == CultureStatus.INF;
+    }
 }

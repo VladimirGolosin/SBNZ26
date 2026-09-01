@@ -11,6 +11,8 @@ public class Recommendation {
 
     private Type type;
     private String message;
+    private ActionName actionName;
+    private SolutionName solutionName;
 
     public Recommendation() {
     }
@@ -18,6 +20,18 @@ public class Recommendation {
     public Recommendation(Type type, String message) {
         this.type = type;
         this.message = message;
+    }
+
+    public Recommendation(Type type, String message, ActionName actionName) {
+        this.type = type;
+        this.message = message;
+        this.actionName = actionName;
+    }
+
+    public Recommendation(Type type, String message, SolutionName solutionName) {
+        this.type = type;
+        this.message = message;
+        this.solutionName = solutionName;
     }
 
     public Type getType() {
@@ -34,5 +48,21 @@ public class Recommendation {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public ActionName getActionName() {
+        return actionName;
+    }
+
+    public void setActionName(ActionName actionName) {
+        this.actionName = actionName;
+    }
+
+    public SolutionName getSolutionName() {
+        return solutionName;
+    }
+
+    public void setSolutionName(SolutionName solutionName) {
+        this.solutionName = solutionName;
     }
 }
