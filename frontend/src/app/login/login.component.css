@@ -33,6 +33,21 @@ h1 {
 .loginbtn {
   width: 260px;
   margin: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+
+  background-color: #3a3a3a;
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+
+  transition: 0.2s ease;
+}
+
+.loginbtn:hover {
+  background-color: #555;
 }
 
 .dont_have {
