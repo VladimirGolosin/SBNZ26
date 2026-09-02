@@ -1,0 +1,42 @@
+ProblemName - Serbian to English reference
+
+ONION (Luk)
+  DOWNY_MILDEW        = plamenjača
+  ONION_FLY           = lukova muva
+
+BEANS (Pasulj)
+  BEAN_LEAF_SPOT      = pegavost lista pasulja
+  APHIDS              = lisne vaši
+
+TOMATO (Paradajz)
+  TOMATO_BLIGHT       = plamenjača paradajza
+
+POTATO (Krompir)
+  POTATO_BLIGHT       = plamenjača krompira
+  COLORADO_POTATO_BEETLE = krompirova zlatica
+
+ZUCCINI / WATERMELON (Tikvica / Lubenica)
+  POWDERY_MILDEW      = pepelnica
+
+CORN (Kukuruz)
+  CORN_MOLD           = plesan kukuruza
+  CORN_BORER          = kukuruzni plamenac
+
+CHERRY (Višnja)
+  DRY_BRANCHES        = sušenje grana
+  MONILIA             = monilija
+  BARK_CRACKING       = pucanje kore stabla
+
+APPLE (Jabuka)
+  APPLE_SCAB          = čađava krastavost
+  CODLING_MOTH        = jabukin smotavac
+  FRUIT_ROT           = trulež plodova
+
+PLUM (Šljiva)
+  SHOT_HOLE_DISEASE   = šupljikavost lista
+  PLUM_SAWFLY         = šljivina osa
+
+GRAPE (Grožđe)
+  GRAPE_POWDERY_MILDEW = pepelnica vinove loze
+  GRAPE_MOTH          = grožđani moljac
+
