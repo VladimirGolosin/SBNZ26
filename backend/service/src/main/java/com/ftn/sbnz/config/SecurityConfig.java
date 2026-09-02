@@ -29,7 +29,7 @@ public class SecurityConfig {
             .formLogin().disable()
             .httpBasic().disable()
             .authorizeHttpRequests()
-                .antMatchers("/api/auth/**", "/api/clock/**", "/api/crops/**", "/api/system/**").permitAll()
+                .antMatchers("/api/auth/**", "/api/clock/**", "/api/crops/**", "/api/system/**", "/api/reports/**").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

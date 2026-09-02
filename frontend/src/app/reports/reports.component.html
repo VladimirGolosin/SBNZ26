@@ -1,1 +1,45 @@
-<p>reports works!</p>
+<div class="page-container">
+  <h2>Weather Report</h2>
+
+  <div class="year-select">
+    <label>Year:</label>
+    <select [(ngModel)]="selectedYear" (ngModelChange)="loadWeatherReport()">
+      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+    </select>
+  </div>
+
+  <div class="chart-container">
+    <canvas #weatherChart></canvas>
+  </div>
+
+  <h2>Cost &amp; Profit Report</h2>
+
+  <div class="totals" *ngIf="costProfitReport">
+    <p>Total Cost: {{ costProfitReport.totalCost | number:'1.2-2' }}</p>
+    <p>Total Revenue: {{ costProfitReport.totalRevenue | number:'1.2-2' }}</p>
+    <p>Total Profit: {{ costProfitReport.totalProfit | number:'1.2-2' }}</p>
+  </div>
+
+  <table class="cost-table" *ngIf="costProfitReport">
+    <thead>
+      <tr>
+        <th>Crop</th>
+        <th>Culture</th>
+        <th>Status</th>
+        <th>Cost</th>
+        <th>Revenue</th>
+        <th>Profit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let entry of costProfitReport.entries">
+        <td>#{{ entry.cropId }}</td>
+        <td>{{ formatEnum(entry.cultureName) }}</td>
+        <td>{{ formatEnum(entry.status) }}</td>
+        <td>{{ entry.cost | number:'1.2-2' }}</td>
+        <td>{{ entry.revenue | number:'1.2-2' }}</td>
+        <td>{{ entry.profit | number:'1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
