@@ -1,0 +1,11 @@
+ActionName - Serbian to English reference
+
+WEED_REMOVAL        = uklanjanje korova       (Luk, Pasulj, Krompir, Kukuruz, Tikvica, Lubenica)
+FERTILIZATION       = đubrenje                (Luk, Pasulj, Kukuruz, Tikvica, Lubenica)
+HILLING             = zagrtanje               (Krompir)
+PEST_CONTROL        = primena zaštite         (Krompir - final stage; also general pest/insect protection, e.g. Grožđe "zaštita od insekata")
+TYING               = podvezivanje            (Paradajz)
+PRUNING             = orezivanje              (Grožđe, Višnja, Jabuka, Šljiva)
+TREE_WHITEWASHING   = krečenje stabla         (Višnja, Jabuka, Šljiva)
+COPPER_SULFATE_SPRAY = prskanje plavim kamenom (Grožđe)
+IRRIGATION          = navodnjavanje           (CEP drought response - not a growth-stage action)

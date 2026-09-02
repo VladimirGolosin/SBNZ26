@@ -85,6 +85,9 @@ public class CriticalPeriodTrackerService implements CriticalPeriodUpdater {
             for (var action : crop.getActions()) {
                 kSession.insert(action);
             }
+            for (var problem : crop.getProblems()) {
+                kSession.insert(problem);
+            }
             kSession.fireAllRules();
             kSession.dispose();
             cropService.save(crop);
@@ -97,6 +100,13 @@ public class CriticalPeriodTrackerService implements CriticalPeriodUpdater {
         entity.setCritical(status.critical);
         entity.setSince(status.since);
         statusRepository.save(entity);
+    }
+
+    public List<CultureName> getCriticalCultures() {
+        return statusMap.entrySet().stream()
+                .filter(e -> e.getValue().critical)
+                .map(java.util.Map.Entry::getKey)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     public boolean isCritical(CultureName culture) {

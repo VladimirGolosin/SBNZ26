@@ -1,0 +1,90 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.crop-card {
+  width: 100%;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.icons {
+  display: flex;
+  gap: 6px;
+}
+
+.rec-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.card-info p {
+  margin: 4px 0;
+}
+
+.card-section {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.resolve-section {
+  min-height: 40px;
+}
+
+.resolve-section.hidden {
+  visibility: hidden;
+}
+
+.card-section button {
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  background-color: #3a3a3a;
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+
+  transition: 0.2s ease;
+}
+
+.card-section button:hover:not(:disabled) {
+  background-color: #555;
+}
+
+.card-section button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.card-section select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  width: 100%;
+  max-width: 220px;
+}

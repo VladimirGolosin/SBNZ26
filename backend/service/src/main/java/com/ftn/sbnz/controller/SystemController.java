@@ -1,6 +1,7 @@
 package com.ftn.sbnz.controller;
 
 import com.ftn.sbnz.leservice.ClockService;
+import com.ftn.sbnz.leservice.CriticalPeriodTrackerService;
 import com.ftn.sbnz.leservice.CultureReferenceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,14 +16,23 @@ public class SystemController {
 
     private final ClockService clockService;
     private final CultureReferenceService cultureReferenceService;
+    private final CriticalPeriodTrackerService criticalPeriodTrackerService;
 
-    public SystemController(ClockService clockService, CultureReferenceService cultureReferenceService) {
+    public SystemController(ClockService clockService,
+                             CultureReferenceService cultureReferenceService,
+                             CriticalPeriodTrackerService criticalPeriodTrackerService) {
         this.clockService = clockService;
         this.cultureReferenceService = cultureReferenceService;
+        this.criticalPeriodTrackerService = criticalPeriodTrackerService;
     }
 
     @GetMapping("/recommended-cultures")
     public ResponseEntity<?> recommendedCultures() {
         return ResponseEntity.ok(cultureReferenceService.getRecommendedCultures(clockService.getCurrentDate().getMonth()));
+    }
+
+    @GetMapping("/critical-cultures")
+    public ResponseEntity<?> criticalCultures() {
+        return ResponseEntity.ok(criticalPeriodTrackerService.getCriticalCultures());
     }
 }

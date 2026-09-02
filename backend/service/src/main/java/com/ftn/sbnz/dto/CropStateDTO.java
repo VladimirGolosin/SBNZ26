@@ -14,6 +14,7 @@ public class CropStateDTO {
     private CultureName cultureName;
     private int level;
     private CultureStatus status;
+    private int size;
     private LocalDate plantedDate;
     private List<Recommendation> recommendations = new ArrayList<>();
 
@@ -47,6 +48,14 @@ public class CropStateDTO {
 
     public void setStatus(CultureStatus status) {
         this.status = status;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public LocalDate getPlantedDate() {

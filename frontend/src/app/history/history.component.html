@@ -1,7 +1,16 @@
-<h2>Crop history</h2>
-<div *ngIf="pastCrops.length === 0">No past crops</div>
-<ul>
-  <li *ngFor="let crop of pastCrops">
-    #{{ crop.id }} - {{ crop.cultureName }} - status {{ crop.status }} - planted {{ crop.plantedDate }}
-  </li>
-</ul>
+<div class="page-container">
+  <h2>Crop History</h2>
+  <div *ngIf="yearGroups.length === 0">No past crops</div>
+
+  <div *ngFor="let group of yearGroups" class="year-group">
+    <h3 class="year-label">{{ group.year }}</h3>
+    <hr>
+    <div class="crop-grid">
+      <app-crop-card
+        *ngFor="let crop of group.crops"
+        [crop]="crop"
+        [readOnly]="true">
+      </app-crop-card>
+    </div>
+  </div>
+</div>

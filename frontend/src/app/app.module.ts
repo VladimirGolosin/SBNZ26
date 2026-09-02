@@ -29,6 +29,7 @@ import { StartComponent } from './start/start.component';
 import { GardenComponent } from './garden/garden.component';
 import { ReportsComponent } from './reports/reports.component';
 import { HistoryComponent } from './history/history.component';
+import { CropCardComponent } from './crop-card/crop-card.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { HistoryComponent } from './history/history.component';
     StartComponent,
     GardenComponent,
     ReportsComponent,
-    HistoryComponent
+    HistoryComponent,
+    CropCardComponent
   ],
   imports: [
     BrowserModule,
