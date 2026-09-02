@@ -49,7 +49,10 @@ public class CropController {
     }
 
     @PostMapping("/plant")
-    public ResponseEntity<?> plantCrop(@RequestParam CultureName culture, @RequestParam Long userId) {
+    public ResponseEntity<?> plantCrop(@RequestParam CultureName culture,
+                                        @RequestParam Long userId,
+                                        @RequestParam int size,
+                                        @RequestParam int number) {
         Month plantingMonth = cultureReferenceService.getPlantingMonth(culture);
         if (plantingMonth == null || clockService.getCurrentDate().getMonth() != plantingMonth) {
             return ResponseEntity.badRequest().body(
@@ -63,8 +66,8 @@ public class CropController {
         crop.setCultureName(culture);
         crop.setStatus(CultureStatus.OK);
         crop.setLevel(1);
-        crop.setSize(10);
-        crop.setNumber(5);
+        crop.setSize(size);
+        crop.setNumber(number);
         crop.setUser(user);
         Crop saved = cropService.save(crop);
         return ResponseEntity.ok(saved.getId());

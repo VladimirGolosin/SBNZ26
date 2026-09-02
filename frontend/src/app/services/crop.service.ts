@@ -11,9 +11,9 @@ export class CropService {
 
   constructor(private http: HttpClient) {}
 
-  plantCrop(culture: string, userId: number): Observable<number> {
+  plantCrop(culture: string, userId: number, size: number, number_: number): Observable<number> {
     return this.http.post<number>(`${environment.api}crops/plant`, null, {
-      params: { culture, userId }
+      params: { culture, userId, size, number: number_ }
     });
   }
 

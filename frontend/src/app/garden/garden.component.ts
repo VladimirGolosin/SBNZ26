@@ -56,7 +56,21 @@ export class GardenComponent implements OnInit {
       return;
     }
 
-    this.cropService.plantCrop(this.selectedCulture, user.id).subscribe({
+    const sizeInput = prompt('Koliko kvadratnih metara zauzima usev?', '10');
+    if (sizeInput === null) {
+      return;
+    }
+    const size = parseInt(sizeInput, 10);
+    if (isNaN(size) || size <= 0) {
+      alert('Unesite ispravnu vrednost za veličinu.');
+      return;
+    }
+
+    if (!confirm(`Da li ste sigurni da želite da posadite ${this.selectedCulture}?`)) {
+      return;
+    }
+
+    this.cropService.plantCrop(this.selectedCulture, user.id, size, 1).subscribe({
       next: () => {
         this.loadCrops();
       },
