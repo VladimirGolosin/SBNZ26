@@ -38,6 +38,14 @@ public class CropService {
         return repository.findByCultureNameAndStatusIn(cultureName, List.of(CultureStatus.OK, CultureStatus.INF));
     }
 
+    
+    public List<Crop> findCropsForUser(Long userId, boolean active) {
+        List<CultureStatus> statuses = active
+                ? List.of(CultureStatus.OK, CultureStatus.INF)
+                : List.of(CultureStatus.FAILED, CultureStatus.COLLECTED, CultureStatus.INF_COLLECTED, CultureStatus.ABANDONED);
+        return repository.findByUserIdAndStatusIn(userId, statuses);
+    }
+
     public Crop collectCrop(Long cropId, LocalDate currentDate) {
         Crop crop = repository.findById(cropId)
                 .orElseThrow(() -> new IllegalArgumentException("Crop not found: " + cropId));
