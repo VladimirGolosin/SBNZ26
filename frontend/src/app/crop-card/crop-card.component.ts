@@ -54,6 +54,14 @@ export class CropCardComponent {
     return this.crop.recommendations.filter(r => r.type === 'PROBLEM_SOLUTION');
   }
 
+  formatEnum(value: string): string {
+    return value
+      .toLowerCase()
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
   private notify(message: string): void {
     this.snackBar.open(message, 'Close', { duration: 3000 });
   }

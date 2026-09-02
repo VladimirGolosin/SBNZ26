@@ -18,7 +18,7 @@
   <div class="card-section">
     <select [(ngModel)]="selectedAction">
       <option value="" disabled selected>Select action</option>
-      <option *ngFor="let action of availableActions" [value]="action">{{ action }}</option>
+      <option *ngFor="let action of availableActions" [value]="action">{{ formatEnum(action) }}</option>
     </select>
     <button (click)="logAction()">Log Action</button>
   </div>
@@ -26,14 +26,14 @@
   <div class="card-section">
     <select [(ngModel)]="selectedProblem">
       <option value="" disabled selected>Select problem</option>
-      <option *ngFor="let problem of availableProblems" [value]="problem">{{ problem }}</option>
+      <option *ngFor="let problem of availableProblems" [value]="problem">{{ formatEnum(problem) }}</option>
     </select>
     <button (click)="reportProblem()">Report Problem</button>
   </div>
 
   <div class="card-section resolve-section" [class.hidden]="problemSolutionRecs.length === 0">
     <button *ngFor="let rec of problemSolutionRecs" (click)="resolveProblem(rec.problemName)">
-      Resolve {{ rec.problemName }}
+      Resolve {{ formatEnum(rec.problemName!) }}
     </button>
   </div>
 
