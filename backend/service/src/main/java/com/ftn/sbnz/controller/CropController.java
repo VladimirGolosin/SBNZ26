@@ -95,6 +95,13 @@ public class CropController {
                                         @RequestParam ActionName action,
                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         Crop crop = findCropOr404(id);
+
+        boolean alreadyLogged = crop.getActions().stream()
+                .anyMatch(a -> a.getName() == action && a.getDone() != null && a.getDone().equals(date));
+        if (alreadyLogged) {
+            return ResponseEntity.badRequest().body("This action was already logged for this date.");
+        }
+
         Action newAction = new Action();
         newAction.setName(action);
         newAction.setDone(date);

@@ -85,6 +85,9 @@ public class CriticalPeriodTrackerService implements CriticalPeriodUpdater {
             for (var action : crop.getActions()) {
                 kSession.insert(action);
             }
+            for (var problem : crop.getProblems()) {
+                kSession.insert(problem);
+            }
             kSession.fireAllRules();
             kSession.dispose();
             cropService.save(crop);

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CropService } from '../services/crop.service';
 import { CropStateDTO } from '../DTOs/CropStateDTO';
 
@@ -35,7 +36,7 @@ export class CropCardComponent {
     POTATO: ['POTATO_BLIGHT', 'COLORADO_POTATO_BEETLE']
   };
 
-  constructor(private cropService: CropService) {}
+  constructor(private cropService: CropService, private snackBar: MatSnackBar) {}
 
   get availableActions(): string[] {
     return this.cultureActions[this.crop.cultureName] || [];
@@ -53,12 +54,19 @@ export class CropCardComponent {
     return this.crop.recommendations.filter(r => r.type === 'PROBLEM_SOLUTION');
   }
 
+  private notify(message: string): void {
+    this.snackBar.open(message, 'Close', { duration: 3000 });
+  }
+
   logAction(): void {
     if (!this.selectedAction) {
       return;
     }
     this.cropService.logAction(this.crop.id, this.selectedAction, this.currentDate).subscribe({
-      next: () => this.updated.emit(),
+      next: () => {
+        this.notify('Action logged');
+        this.updated.emit();
+      },
       error: (err) => alert(err?.error || 'Could not log action')
     });
   }
@@ -68,7 +76,10 @@ export class CropCardComponent {
       return;
     }
     this.cropService.reportProblem(this.crop.id, this.selectedProblem).subscribe({
-      next: () => this.updated.emit(),
+      next: () => {
+        this.notify('Problem reported');
+        this.updated.emit();
+      },
       error: (err) => alert(err?.error || 'Could not report problem')
     });
   }
@@ -78,7 +89,10 @@ export class CropCardComponent {
       return;
     }
     this.cropService.resolveProblem(this.crop.id, problemName).subscribe({
-      next: () => this.updated.emit(),
+      next: () => {
+        this.notify('Problem resolved');
+        this.updated.emit();
+      },
       error: (err) => alert(err?.error || 'Could not resolve problem')
     });
   }
@@ -88,7 +102,10 @@ export class CropCardComponent {
       return;
     }
     this.cropService.collectCrop(this.crop.id).subscribe({
-      next: () => this.updated.emit(),
+      next: () => {
+        this.notify('Crop collected');
+        this.updated.emit();
+      },
       error: (err) => alert(err?.error || 'Could not collect crop')
     });
   }

@@ -1,0 +1,10 @@
+.page-container {
+  padding: 30px 40px;
+}
+
+.crop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 30px;
+}

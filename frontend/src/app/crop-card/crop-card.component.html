@@ -31,7 +31,7 @@
     <button (click)="reportProblem()">Report Problem</button>
   </div>
 
-  <div class="card-section" *ngIf="problemSolutionRecs.length > 0">
+  <div class="card-section resolve-section" [class.hidden]="problemSolutionRecs.length === 0">
     <button *ngFor="let rec of problemSolutionRecs" (click)="resolveProblem(rec.problemName)">
       Resolve {{ rec.problemName }}
     </button>

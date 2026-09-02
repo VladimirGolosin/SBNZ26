@@ -7,7 +7,7 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'scada-front';
+  title = 'garden-soft';
   showNavbar: boolean = true;
 
   constructor(private router: Router) {

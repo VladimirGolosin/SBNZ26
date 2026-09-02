@@ -1,6 +1,7 @@
 package com.ftn.sbnz.leservice;
 
 import com.ftn.sbnz.dto.CropStateDTO;
+import com.ftn.sbnz.model.ActionName;
 import com.ftn.sbnz.model.Crop;
 import com.ftn.sbnz.model.Recommendation;
 import org.kie.api.runtime.KieContainer;
@@ -50,11 +51,16 @@ public class CropRuleEvaluationService {
 
         cropService.save(crop);
 
-        if (crop.isActive() && criticalPeriodTrackerService.isCritical(crop.getCultureName())) {
+        boolean irrigatedToday = crop.getActions().stream()
+                .anyMatch(a -> a.getName() == ActionName.IRRIGATION
+                        && a.getDone() != null
+                        && a.getDone().equals(currentDate));
+
+        if (crop.isActive() && criticalPeriodTrackerService.isCritical(crop.getCultureName()) && !irrigatedToday) {
             recommendations.add(new Recommendation(
                     Recommendation.Type.NEEDS_IRRIGATION,
                     "Critical period: irrigation is recommended.",
-                    com.ftn.sbnz.model.ActionName.IRRIGATION
+                    ActionName.IRRIGATION
             ));
         }
 
