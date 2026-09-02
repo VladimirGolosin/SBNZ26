@@ -12,6 +12,8 @@ import com.ftn.sbnz.model.CultureName;
 import com.ftn.sbnz.model.CultureStatus;
 import com.ftn.sbnz.model.Problem;
 import com.ftn.sbnz.model.ProblemName;
+import com.ftn.sbnz.model.User;
+import com.ftn.sbnz.repo.UserRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/crops")
@@ -30,33 +34,53 @@ public class CropController {
     private final CropService cropService;
     private final CropRuleEvaluationService cropRuleEvaluationService;
     private final CultureReferenceService cultureReferenceService;
+    private final UserRepository userRepository;
 
     public CropController(ClockService clockService,
                            CropService cropService,
                            CropRuleEvaluationService cropRuleEvaluationService,
-                           CultureReferenceService cultureReferenceService) {
+                           CultureReferenceService cultureReferenceService,
+                           UserRepository userRepository) {
         this.clockService = clockService;
         this.cropService = cropService;
         this.cropRuleEvaluationService = cropRuleEvaluationService;
         this.cultureReferenceService = cultureReferenceService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/plant")
-    public ResponseEntity<?> plantCrop(@RequestParam CultureName culture) {
+    public ResponseEntity<?> plantCrop(@RequestParam CultureName culture,
+                                        @RequestParam Long userId,
+                                        @RequestParam int size,
+                                        @RequestParam int number) {
         Month plantingMonth = cultureReferenceService.getPlantingMonth(culture);
         if (plantingMonth == null || clockService.getCurrentDate().getMonth() != plantingMonth) {
             return ResponseEntity.badRequest().body(
-                    "Kultura " + culture + " se sadi tokom meseca " + plantingMonth + ", trenutni mesec ne odgovara.");
+                    "The culture " + culture + " is planted during " + plantingMonth + "; the current month does not match.");
         }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + userId));
 
         Crop crop = new Crop();
         crop.setCultureName(culture);
         crop.setStatus(CultureStatus.OK);
         crop.setLevel(1);
-        crop.setSize(10);
-        crop.setNumber(5);
+        crop.setSize(size);
+        crop.setNumber(number);
+        crop.setUser(user);
+        crop.setPlantedDate(clockService.getCurrentDate());
         Crop saved = cropService.save(crop);
         return ResponseEntity.ok(saved.getId());
+    }
+
+    @GetMapping
+    public ResponseEntity<?> listCrops(@RequestParam Long userId, @RequestParam(defaultValue = "true") boolean active) {
+        List<Crop> crops = cropService.findCropsForUser(userId, active);
+        List<CropStateDTO> result = crops.stream()
+                .map(c -> cropRuleEvaluationService.evaluateCropRules(c, clockService.getCurrentDate()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")

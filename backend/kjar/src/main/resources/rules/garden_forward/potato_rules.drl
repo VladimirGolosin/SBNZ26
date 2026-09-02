@@ -73,7 +73,7 @@ rule "Potato: weeding due reminder"
         $c: Crop(cultureName == CultureName.POTATO, level == 1, isActive())
         eval( currentDate.getMonth() == Month.APRIL )
     then
-        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je ukloniti korov do kraja aprila.", ActionName.WEED_REMOVAL));
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Weeding must be done by the end of April.", ActionName.WEED_REMOVAL));
 end
 
 rule "Potato: hilling due reminder"
@@ -81,7 +81,7 @@ rule "Potato: hilling due reminder"
         $c: Crop(cultureName == CultureName.POTATO, level == 2, isActive())
         eval( currentDate.getMonth() == Month.MAY )
     then
-        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je izvršiti zagrtanje do kraja maja.", ActionName.HILLING));
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Hilling must be done by the end of May.", ActionName.HILLING));
 end
 
 rule "Potato: protection due reminder"
@@ -89,7 +89,7 @@ rule "Potato: protection due reminder"
         $c: Crop(cultureName == CultureName.POTATO, level == 3, isActive())
         eval( currentDate.getMonth() == Month.JULY )
     then
-        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je primeniti zaštitu do kraja jula.", ActionName.PEST_CONTROL));
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Pest protection must be applied by the end of July.", ActionName.PEST_CONTROL));
 end
 
 // ===================== PROBLEM -> SOLUTION RECOMMENDATIONS =====================
@@ -100,7 +100,7 @@ rule "Potato: blight reported"
         $p: Problem(name == ProblemName.POTATO_BLIGHT, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Prijavljena je plamenjača krompira - preporučena je primena fungicida.", SolutionName.APPLY_FUNGICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Potato blight reported - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE));
 end
 
 rule "Potato: beetle reported"
@@ -109,7 +109,7 @@ rule "Potato: beetle reported"
         $p: Problem(name == ProblemName.COLORADO_POTATO_BEETLE, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Prijavljeno je prisustvo krompirove zlatice - preporučena je primena insekticida.", SolutionName.APPLY_INSECTICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Colorado potato beetle presence reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE));
 end
 
 // ===================== HARVEST RECOMMENDATION =====================
@@ -119,5 +119,5 @@ rule "Potato: harvest ready"
         $c: Crop(cultureName == CultureName.POTATO, isActive())
         eval( currentDate.getMonth() == Month.AUGUST )
     then
-        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "Vreme je za prikupljanje ploda krompira."));
+        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "It's time to harvest the potatoes."));
 end

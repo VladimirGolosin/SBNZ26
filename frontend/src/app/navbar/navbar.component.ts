@@ -31,6 +31,10 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/garden']);
   }
 
+  goToHistory() {
+    this.router.navigate(['/history']);
+  }
+
   goToReports() {
     this.router.navigate(['/reports']);
   }

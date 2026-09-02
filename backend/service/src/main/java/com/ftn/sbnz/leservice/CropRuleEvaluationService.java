@@ -53,7 +53,7 @@ public class CropRuleEvaluationService {
         if (crop.isActive() && criticalPeriodTrackerService.isCritical(crop.getCultureName())) {
             recommendations.add(new Recommendation(
                     Recommendation.Type.NEEDS_IRRIGATION,
-                    "Kritični period: preporučuje se navodnjavanje.",
+                    "Critical period: irrigation is recommended.",
                     com.ftn.sbnz.model.ActionName.IRRIGATION
             ));
         }
@@ -63,6 +63,7 @@ public class CropRuleEvaluationService {
         dto.setCultureName(crop.getCultureName());
         dto.setLevel(crop.getLevel());
         dto.setStatus(crop.getStatus());
+        dto.setPlantedDate(crop.getPlantedDate());
         dto.setRecommendations(recommendations);
         return dto;
     }

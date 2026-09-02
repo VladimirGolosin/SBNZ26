@@ -19,9 +19,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatDialogModule} from "@angular/material/dialog";
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 import { StartComponent } from './start/start.component';
 import { GardenComponent } from './garden/garden.component';
 import { ReportsComponent } from './reports/reports.component';
+import { HistoryComponent } from './history/history.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +38,8 @@ import { ReportsComponent } from './reports/reports.component';
     RegistrationComponent,
     StartComponent,
     GardenComponent,
-    ReportsComponent
+    ReportsComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +58,12 @@ import { ReportsComponent } from './reports/reports.component';
     MatDialogModule,
     MatSortModule,
     MatSnackBarModule,
-    
+    MatButtonModule,
+    MatChipsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,7 @@
 package com.ftn.sbnz.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Crop {
     private int size;
 
     private int number;
+
+    private LocalDate plantedDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -82,6 +85,14 @@ public class Crop {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public LocalDate getPlantedDate() {
+        return plantedDate;
+    }
+
+    public void setPlantedDate(LocalDate plantedDate) {
+        this.plantedDate = plantedDate;
     }
 
     public User getUser() {

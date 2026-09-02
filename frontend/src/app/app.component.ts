@@ -15,7 +15,7 @@ export class AppComponent {
       if (event instanceof NavigationEnd) {
         const navigationEndEvent = event as NavigationEnd;
         const url = navigationEndEvent.url;
-        if (url.includes('garden') || url.includes('reports')) {
+        if (url.includes('garden') || url.includes('reports') || url.includes('history')) {
           this.showNavbar = true;
         } else {
           this.showNavbar = false;

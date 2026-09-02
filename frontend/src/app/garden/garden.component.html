@@ -1,1 +1,19 @@
-<p>garden works!</p>
+<div>
+  <p>Current date: {{ currentDate }}</p>
+
+  <select [(ngModel)]="selectedCulture">
+    <option *ngFor="let culture of availableCultures" [value]="culture">{{ culture }}</option>
+  </select>
+  <button (click)="plantCrop()">Plant</button>
+</div>
+
+<hr>
+
+<h2>Active crops</h2>
+<div *ngIf="activeCrops.length === 0">No active crops</div>
+<ul>
+  <li *ngFor="let crop of activeCrops">
+    #{{ crop.id }} - {{ crop.cultureName }} - level {{ crop.level }} - status {{ crop.status }}
+    <span *ngFor="let rec of crop.recommendations"> [{{ rec.type }}: {{ rec.message }}]</span>
+  </li>
+</ul>
