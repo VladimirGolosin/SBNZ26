@@ -39,6 +39,12 @@ export class CropService {
     });
   }
 
+  resolveProblem(cropId: number, problemName: string): Observable<CropStateDTO> {
+    return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/problems/resolve`, null, {
+      params: { problemName }
+    });
+  }
+
   markProblemResolving(cropId: number, problemId: number): Observable<CropStateDTO> {
     return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/problems/${problemId}/resolving`, null);
   }

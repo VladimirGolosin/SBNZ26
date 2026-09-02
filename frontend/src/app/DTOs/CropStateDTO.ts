@@ -3,6 +3,7 @@ export interface Recommendation {
   message: string;
   actionName: string | null;
   solutionName: string | null;
+  problemName: string | null;
 }
 
 export interface CropStateDTO {
@@ -10,6 +11,7 @@ export interface CropStateDTO {
   cultureName: string;
   level: number;
   status: string;
+  size: number;
   plantedDate: string | null;
   recommendations: Recommendation[];
 }
