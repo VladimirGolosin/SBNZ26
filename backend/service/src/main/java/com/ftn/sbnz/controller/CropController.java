@@ -69,6 +69,7 @@ public class CropController {
         crop.setSize(size);
         crop.setNumber(number);
         crop.setUser(user);
+        crop.setPlantedDate(clockService.getCurrentDate());
         Crop saved = cropService.save(crop);
         return ResponseEntity.ok(saved.getId());
     }

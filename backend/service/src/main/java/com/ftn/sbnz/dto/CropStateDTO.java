@@ -4,6 +4,7 @@ import com.ftn.sbnz.model.CultureName;
 import com.ftn.sbnz.model.CultureStatus;
 import com.ftn.sbnz.model.Recommendation;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class CropStateDTO {
     private CultureName cultureName;
     private int level;
     private CultureStatus status;
+    private LocalDate plantedDate;
     private List<Recommendation> recommendations = new ArrayList<>();
 
     public Long getId() {
@@ -45,6 +47,14 @@ public class CropStateDTO {
 
     public void setStatus(CultureStatus status) {
         this.status = status;
+    }
+
+    public LocalDate getPlantedDate() {
+        return plantedDate;
+    }
+
+    public void setPlantedDate(LocalDate plantedDate) {
+        this.plantedDate = plantedDate;
     }
 
     public List<Recommendation> getRecommendations() {
