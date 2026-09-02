@@ -56,7 +56,7 @@ public class CropController {
         Month plantingMonth = cultureReferenceService.getPlantingMonth(culture);
         if (plantingMonth == null || clockService.getCurrentDate().getMonth() != plantingMonth) {
             return ResponseEntity.badRequest().body(
-                    "Kultura " + culture + " se sadi tokom meseca " + plantingMonth + ", trenutni mesec ne odgovara.");
+                    "The culture " + culture + " is planted during " + plantingMonth + "; the current month does not match.");
         }
 
         User user = userRepository.findById(userId)

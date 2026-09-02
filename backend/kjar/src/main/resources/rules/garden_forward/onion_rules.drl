@@ -56,7 +56,7 @@ rule "Onion: weeding due reminder"
         $c: Crop(cultureName == CultureName.ONION, level == 1, isActive())
         eval( currentDate.getMonth() == Month.MAY )
     then
-        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je ukloniti korov do kraja maja.", ActionName.WEED_REMOVAL));
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Weeding must be done by the end of May.", ActionName.WEED_REMOVAL));
 end
 
 rule "Onion: fertilizing due reminder"
@@ -64,7 +64,7 @@ rule "Onion: fertilizing due reminder"
         $c: Crop(cultureName == CultureName.ONION, level == 2, isActive())
         eval( currentDate.getMonth() == Month.JUNE )
     then
-        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Potrebno je izvršiti đubrenje do kraja juna.", ActionName.FERTILIZATION));
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Fertilizing must be done by the end of June.", ActionName.FERTILIZATION));
 end
 
 // ===================== PROBLEM -> SOLUTION RECOMMENDATIONS =====================
@@ -75,7 +75,7 @@ rule "Onion: downy mildew reported"
         $p: Problem(name == ProblemName.DOWNY_MILDEW, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Prijavljena je plamenjača na luku - preporučena je primena zaštitnih sredstava protiv gljivica.", SolutionName.APPLY_FUNGICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Downy mildew reported on onion - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE));
 end
 
 rule "Onion: onion fly reported"
@@ -84,7 +84,7 @@ rule "Onion: onion fly reported"
         $p: Problem(name == ProblemName.ONION_FLY, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Prijavljeno je prisustvo lukove muve - preporučena je primena insekticida.", SolutionName.APPLY_INSECTICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Onion fly presence reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE));
 end
 
 // ===================== HARVEST RECOMMENDATION =====================
@@ -94,5 +94,5 @@ rule "Onion: harvest ready"
         $c: Crop(cultureName == CultureName.ONION, isActive())
         eval( currentDate.getMonth() == Month.JULY )
     then
-        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "Vreme je za prikupljanje ploda luka."));
+        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "It's time to harvest the onion."));
 end
