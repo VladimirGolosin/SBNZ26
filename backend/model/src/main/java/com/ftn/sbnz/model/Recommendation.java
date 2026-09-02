@@ -13,6 +13,7 @@ public class Recommendation {
     private String message;
     private ActionName actionName;
     private SolutionName solutionName;
+    private ProblemName problemName;
 
     public Recommendation() {
     }
@@ -32,6 +33,13 @@ public class Recommendation {
         this.type = type;
         this.message = message;
         this.solutionName = solutionName;
+    }
+
+    public Recommendation(Type type, String message, SolutionName solutionName, ProblemName problemName) {
+        this.type = type;
+        this.message = message;
+        this.solutionName = solutionName;
+        this.problemName = problemName;
     }
 
     public Type getType() {
@@ -64,5 +72,13 @@ public class Recommendation {
 
     public void setSolutionName(SolutionName solutionName) {
         this.solutionName = solutionName;
+    }
+
+    public ProblemName getProblemName() {
+        return problemName;
+    }
+
+    public void setProblemName(ProblemName problemName) {
+        this.problemName = problemName;
     }
 }

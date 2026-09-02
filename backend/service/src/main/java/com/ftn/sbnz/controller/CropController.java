@@ -106,10 +106,29 @@ public class CropController {
     @PostMapping("/{id}/problems")
     public ResponseEntity<?> reportProblem(@PathVariable Long id, @RequestParam ProblemName problem) {
         Crop crop = findCropOr404(id);
+
+        boolean alreadyActive = crop.getProblems().stream()
+                .anyMatch(p -> p.getName() == problem && p.getAddressed() == null);
+        if (alreadyActive) {
+            return ResponseEntity.badRequest().body("This problem is already reported and unresolved for this crop.");
+        }
+
         Problem newProblem = new Problem();
         newProblem.setName(problem);
         newProblem.setAppeared(clockService.getCurrentDate());
         crop.getProblems().add(newProblem);
+        CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/{id}/problems/resolve")
+    public ResponseEntity<?> resolveProblem(@PathVariable Long id, @RequestParam ProblemName problemName) {
+        Crop crop = findCropOr404(id);
+        Problem problem = crop.getProblems().stream()
+                .filter(p -> p.getName() == problemName && p.getAddressed() == null)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No active problem of that type on this crop."));
+        problem.setAddressed(clockService.getCurrentDate());
         CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
         return ResponseEntity.ok(result);
     }

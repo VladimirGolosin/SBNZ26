@@ -75,7 +75,7 @@ rule "Onion: downy mildew reported"
         $p: Problem(name == ProblemName.DOWNY_MILDEW, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Downy mildew reported on onion - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Downy mildew reported on onion - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE, ProblemName.DOWNY_MILDEW));
 end
 
 rule "Onion: onion fly reported"
@@ -84,7 +84,7 @@ rule "Onion: onion fly reported"
         $p: Problem(name == ProblemName.ONION_FLY, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Onion fly presence reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Onion fly presence reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE, ProblemName.ONION_FLY));
 end
 
 // ===================== HARVEST RECOMMENDATION =====================

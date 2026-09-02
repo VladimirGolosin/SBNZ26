@@ -75,7 +75,7 @@ rule "Beans: leaf spot reported"
         $p: Problem(name == ProblemName.BEAN_LEAF_SPOT, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Bean leaf spot reported - applying a fungicide and removing infected leaves is recommended.", SolutionName.APPLY_FUNGICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Bean leaf spot reported - applying a fungicide and removing infected leaves is recommended.", SolutionName.APPLY_FUNGICIDE, ProblemName.BEAN_LEAF_SPOT));
 end
 
 rule "Beans: aphids reported"
@@ -84,7 +84,7 @@ rule "Beans: aphids reported"
         $p: Problem(name == ProblemName.APHIDS, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Aphids reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Aphids reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE, ProblemName.APHIDS));
 end
 
 // ===================== HARVEST RECOMMENDATION =====================

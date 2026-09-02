@@ -100,7 +100,7 @@ rule "Potato: blight reported"
         $p: Problem(name == ProblemName.POTATO_BLIGHT, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Potato blight reported - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Potato blight reported - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE, ProblemName.POTATO_BLIGHT));
 end
 
 rule "Potato: beetle reported"
@@ -109,7 +109,7 @@ rule "Potato: beetle reported"
         $p: Problem(name == ProblemName.COLORADO_POTATO_BEETLE, addressed == null) from $problems
     then
         modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
-        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Colorado potato beetle presence reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE));
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Colorado potato beetle presence reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE, ProblemName.COLORADO_POTATO_BEETLE));
 end
 
 // ===================== HARVEST RECOMMENDATION =====================

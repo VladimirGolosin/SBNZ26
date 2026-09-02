@@ -63,6 +63,7 @@ public class CropRuleEvaluationService {
         dto.setCultureName(crop.getCultureName());
         dto.setLevel(crop.getLevel());
         dto.setStatus(crop.getStatus());
+        dto.setSize(crop.getSize());
         dto.setPlantedDate(crop.getPlantedDate());
         dto.setRecommendations(recommendations);
         return dto;
