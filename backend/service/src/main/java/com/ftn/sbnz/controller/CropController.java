@@ -167,6 +167,17 @@ public class CropController {
         }
     }
 
+    @PostMapping("/{id}/fail")
+    public ResponseEntity<?> failCrop(@PathVariable Long id) {
+        try {
+            Crop crop = cropService.failCrop(id);
+            CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     private Crop findCropOr404(Long id) {
         return cropService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Crop not found: " + id));

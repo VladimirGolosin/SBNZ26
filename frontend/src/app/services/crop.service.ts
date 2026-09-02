@@ -56,4 +56,8 @@ export class CropService {
   collectCrop(cropId: number): Observable<CropStateDTO> {
     return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/collect`, null);
   }
+
+  failCrop(cropId: number): Observable<CropStateDTO> {
+    return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/fail`, null);
+  }
 }

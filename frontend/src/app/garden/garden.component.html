@@ -4,7 +4,7 @@
       <h3>Plant a Crop</h3>
       <div class="plant-row">
         <select [(ngModel)]="selectedCulture">
-          <option *ngFor="let culture of recommendedCultures" [value]="culture">{{ culture }}</option>
+          <option *ngFor="let culture of recommendedCultures" [value]="culture">{{ formatEnum(culture) }}</option>
         </select>
       </div>
       <div class="plant-row">
@@ -21,16 +21,16 @@
 
     <div class="band status-band">
       <h3>Status</h3>
-      <p>Date: {{ currentDate }}</p>
-      <p>Weather Mode: {{ weatherMode }}</p>
-      <p>Profile: {{ activeProfile }}</p>
+      <p>Date: {{ currentDate | date:'dd.MM.yyyy' }}</p>
+      <p>Weather Mode: {{ formatEnum(weatherMode) }}</p>
+      <p>Profile: {{ formatEnum(activeProfile) }}</p>
     </div>
 
     <div class="band critical-band">
       <h3>Critical Time</h3>
       <p *ngIf="criticalCultures.length === 0">No cultures currently critical</p>
       <p *ngIf="criticalCultures.length > 0">
-        These cultures need irrigation: {{ criticalCultures.join(', ') }}
+        These cultures need irrigation: {{ criticalCultures.map(formatEnum).join(', ') }}
       </p>
     </div>
   </div>

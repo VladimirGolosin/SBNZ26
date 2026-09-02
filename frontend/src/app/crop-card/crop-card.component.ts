@@ -12,6 +12,7 @@ export class CropCardComponent {
 
   @Input() crop!: CropStateDTO;
   @Input() currentDate: string = '';
+  @Input() readOnly: boolean = false;
   @Output() updated = new EventEmitter<void>();
 
   selectedAction: string = '';
@@ -55,10 +56,10 @@ export class CropCardComponent {
   }
 
   formatEnum(value: string): string {
+    const acronyms = ['OK', 'INF'];
     return value
-      .toLowerCase()
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => acronyms.includes(word) ? word : word.charAt(0) + word.slice(1).toLowerCase())
       .join(' ');
   }
 
@@ -115,6 +116,19 @@ export class CropCardComponent {
         this.updated.emit();
       },
       error: (err) => alert(err?.error || 'Could not collect crop')
+    });
+  }
+
+  failCrop(): void {
+    if (!confirm(`Mark this ${this.crop.cultureName} as failed?`)) {
+      return;
+    }
+    this.cropService.failCrop(this.crop.id).subscribe({
+      next: () => {
+        this.notify('Crop marked as failed');
+        this.updated.emit();
+      },
+      error: (err) => alert(err?.error || 'Could not mark crop as failed')
     });
   }
 }

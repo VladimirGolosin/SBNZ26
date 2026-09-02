@@ -1,0 +1,18 @@
+.page-container {
+  padding: 30px 40px;
+}
+
+.year-group {
+  margin-bottom: 30px;
+}
+
+.year-label {
+  margin-bottom: 8px;
+}
+
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 10px;
+}

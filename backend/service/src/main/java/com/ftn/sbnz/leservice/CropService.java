@@ -38,7 +38,6 @@ public class CropService {
         return repository.findByCultureNameAndStatusIn(cultureName, List.of(CultureStatus.OK, CultureStatus.INF));
     }
 
-    
     public List<Crop> findCropsForUser(Long userId, boolean active) {
         List<CultureStatus> statuses = active
                 ? List.of(CultureStatus.OK, CultureStatus.INF)
@@ -65,6 +64,18 @@ public class CropService {
             crop.setStatus(CultureStatus.COLLECTED);
         }
 
+        return repository.save(crop);
+    }
+
+    public Crop failCrop(Long cropId) {
+        Crop crop = repository.findById(cropId)
+                .orElseThrow(() -> new IllegalArgumentException("Crop not found: " + cropId));
+
+        if (!crop.isActive()) {
+            throw new IllegalStateException("Crop is not active and cannot be marked as failed (current status: " + crop.getStatus() + ")");
+        }
+
+        crop.setStatus(CultureStatus.FAILED);
         return repository.save(crop);
     }
 

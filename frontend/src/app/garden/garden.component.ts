@@ -67,6 +67,14 @@ export class GardenComponent implements OnInit {
     });
   }
 
+    formatEnum(value: string): string {
+    const acronyms = ['OK', 'INF'];
+    return value
+      .split('_')
+      .map(word => acronyms.includes(word) ? word : word.charAt(0) + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+
   plantCrop(): void {
     const user = this.session.getUser();
     if (!user) {

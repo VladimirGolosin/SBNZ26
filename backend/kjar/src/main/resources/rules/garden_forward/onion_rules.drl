@@ -92,7 +92,7 @@ end
 rule "Onion: harvest ready"
     when
         $c: Crop(cultureName == CultureName.ONION, isActive())
-        eval( currentDate.getMonth() == Month.JULY )
+        eval( currentDate.getMonth().compareTo(Month.JULY) >= 0 )
     then
         insert(new Recommendation(Recommendation.Type.HARVEST_READY, "It's time to harvest the onion."));
 end
