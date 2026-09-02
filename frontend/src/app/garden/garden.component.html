@@ -1,12 +1,39 @@
 <div class="page-container">
-  <p>Current date: {{ currentDate }}</p>
+  <div class="bands-row">
+    <div class="band plant-band">
+      <h3>Plant a Crop</h3>
+      <div class="plant-row">
+        <select [(ngModel)]="selectedCulture">
+          <option *ngFor="let culture of recommendedCultures" [value]="culture">{{ culture }}</option>
+        </select>
+      </div>
+      <div class="plant-row">
+        <input type="number" [(ngModel)]="plantSize" min="1" placeholder="Size" />
+        <span class="unit-label">m²</span>
+      </div>
+      <div class="plant-row">
+        <button (click)="plantCrop()">Plant</button>
+      </div>
+      <p class="band-note" *ngIf="recommendedCultures.length === 0">
+        No cultures are plantable this month.
+      </p>
+    </div>
 
-  <select [(ngModel)]="selectedCulture">
-    <option *ngFor="let culture of availableCultures" [value]="culture">{{ culture }}</option>
-  </select>
-  <button (click)="plantCrop()">Plant</button>
+    <div class="band status-band">
+      <h3>Status</h3>
+      <p>Date: {{ currentDate }}</p>
+      <p>Weather Mode: {{ weatherMode }}</p>
+      <p>Profile: {{ activeProfile }}</p>
+    </div>
 
-  <hr>
+    <div class="band critical-band">
+      <h3>Critical Time</h3>
+      <p *ngIf="criticalCultures.length === 0">No cultures currently critical</p>
+      <p *ngIf="criticalCultures.length > 0">
+        These cultures need irrigation: {{ criticalCultures.join(', ') }}
+      </p>
+    </div>
+  </div>
 
   <h2>Active crops</h2>
   <div *ngIf="activeCrops.length === 0">No active crops</div>

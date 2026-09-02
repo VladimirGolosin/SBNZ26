@@ -102,6 +102,13 @@ public class CriticalPeriodTrackerService implements CriticalPeriodUpdater {
         statusRepository.save(entity);
     }
 
+    public List<CultureName> getCriticalCultures() {
+        return statusMap.entrySet().stream()
+                .filter(e -> e.getValue().critical)
+                .map(java.util.Map.Entry::getKey)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     public boolean isCritical(CultureName culture) {
         Status status = statusMap.get(culture);
         return status != null && status.critical;

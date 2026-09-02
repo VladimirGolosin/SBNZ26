@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CropService } from '../services/crop.service';
 import { ClockService } from '../services/clock.service';
+import { SystemService } from '../services/system.service';
 import { SessionService } from '../services/session.service';
 import { CropStateDTO } from '../DTOs/CropStateDTO';
 
@@ -13,24 +14,45 @@ export class GardenComponent implements OnInit {
 
   activeCrops: CropStateDTO[] = [];
   currentDate: string = '';
+  activeProfile: string = '';
+  weatherMode: string = '';
 
-  availableCultures: string[] = ['ONION', 'BEANS', 'POTATO'];
-  selectedCulture: string = 'ONION';
+  recommendedCultures: string[] = [];
+  criticalCultures: string[] = [];
+
+  selectedCulture: string = '';
+  plantSize: number = 10;
 
   constructor(
     private cropService: CropService,
     private clockService: ClockService,
+    private systemService: SystemService,
     private session: SessionService
   ) {}
 
   ngOnInit(): void {
     this.loadClockStatus();
     this.loadCrops();
+    this.loadSystemInfo();
   }
 
   loadClockStatus(): void {
     this.clockService.getStatus().subscribe(status => {
       this.currentDate = status.currentDate;
+      this.activeProfile = status.activeProfile;
+      this.weatherMode = status.weatherMode;
+    });
+  }
+
+  loadSystemInfo(): void {
+    this.systemService.getRecommendedCultures().subscribe(cultures => {
+      this.recommendedCultures = cultures;
+      if (cultures.length > 0 && !cultures.includes(this.selectedCulture)) {
+        this.selectedCulture = cultures[0];
+      }
+    });
+    this.systemService.getCriticalCultures().subscribe(cultures => {
+      this.criticalCultures = cultures;
     });
   }
 
@@ -51,12 +73,12 @@ export class GardenComponent implements OnInit {
       return;
     }
 
-    const sizeInput = prompt('How many square meters does the crop cover?', '10');
-    if (sizeInput === null) {
+    if (!this.selectedCulture) {
+      alert('No culture is plantable this month.');
       return;
     }
-    const size = parseInt(sizeInput, 10);
-    if (isNaN(size) || size <= 0) {
+
+    if (!this.plantSize || this.plantSize <= 0) {
       alert('Please enter a valid size value.');
       return;
     }
@@ -65,9 +87,10 @@ export class GardenComponent implements OnInit {
       return;
     }
 
-    this.cropService.plantCrop(this.selectedCulture, user.id, size, 1).subscribe({
+    this.cropService.plantCrop(this.selectedCulture, user.id, this.plantSize, 1).subscribe({
       next: () => {
         this.loadCrops();
+        this.loadSystemInfo();
       },
       error: (err) => {
         alert(err?.error || 'Could not plant crop');

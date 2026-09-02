@@ -1,6 +1,6 @@
 :host {
   display: block;
-  width: max(340px, 30%);
+  width: 100%;
 }
 
 .crop-card {

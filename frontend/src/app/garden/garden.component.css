@@ -2,9 +2,78 @@
   padding: 30px 40px;
 }
 
-.crop-grid {
+.bands-row {
   display: flex;
+  gap: 20px;
   flex-wrap: wrap;
-  width: 100%;
+  margin: 0 auto 20px auto;
+  width: 75%;
+  justify-content: center;
+}
+
+.band {
+  flex: 1;
+  min-width: 260px;
+  background-color: #26a69a;
+  color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.band h3 {
+  margin: 0 0 10px 0;
+}
+
+.band p {
+  margin: 4px 0;
+}
+
+.band-note {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.plant-row {
+  margin-bottom: 8px;
+}
+
+.plant-row select,
+.plant-row input {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+.plant-row input {
+  width: 80px;
+}
+
+.unit-label {
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.plant-row button {
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+
+  background-color: #3a3a3a;
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+
+  transition: 0.2s ease;
+}
+
+.plant-row button:hover {
+  background-color: #555;
+}
+
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
 }
