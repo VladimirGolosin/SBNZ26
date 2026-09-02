@@ -28,6 +28,7 @@ import { MatCardModule } from '@angular/material/card';
 import { StartComponent } from './start/start.component';
 import { GardenComponent } from './garden/garden.component';
 import { ReportsComponent } from './reports/reports.component';
+import { HistoryComponent } from './history/history.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ReportsComponent } from './reports/reports.component';
     RegistrationComponent,
     StartComponent,
     GardenComponent,
-    ReportsComponent
+    ReportsComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,

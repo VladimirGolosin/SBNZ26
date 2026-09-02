@@ -10,5 +10,6 @@ export interface CropStateDTO {
   cultureName: string;
   level: number;
   status: string;
+  plantedDate: string | null;
   recommendations: Recommendation[];
 }
