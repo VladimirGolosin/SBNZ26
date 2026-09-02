@@ -1,4 +1,3 @@
-
 <div>
   <p>Current date: {{ currentDate }}</p>
 
@@ -16,15 +15,5 @@
   <li *ngFor="let crop of activeCrops">
     #{{ crop.id }} - {{ crop.cultureName }} - level {{ crop.level }} - status {{ crop.status }}
     <span *ngFor="let rec of crop.recommendations"> [{{ rec.type }}: {{ rec.message }}]</span>
-  </li>
-</ul>
-
-<hr>
-
-<h2>Past crops</h2>
-<div *ngIf="pastCrops.length === 0">No past crops</div>
-<ul>
-  <li *ngFor="let crop of pastCrops">
-    #{{ crop.id }} - {{ crop.cultureName }} - status {{ crop.status }}
   </li>
 </ul>

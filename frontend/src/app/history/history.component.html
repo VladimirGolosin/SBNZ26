@@ -1,1 +1,7 @@
-<p>history works!</p>
+<h2>Crop history</h2>
+<div *ngIf="pastCrops.length === 0">No past crops</div>
+<ul>
+  <li *ngFor="let crop of pastCrops">
+    #{{ crop.id }} - {{ crop.cultureName }} - status {{ crop.status }} - planted {{ crop.plantedDate }}
+  </li>
+</ul>

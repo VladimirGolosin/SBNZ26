@@ -12,7 +12,6 @@ import { CropStateDTO } from '../DTOs/CropStateDTO';
 export class GardenComponent implements OnInit {
 
   activeCrops: CropStateDTO[] = [];
-  pastCrops: CropStateDTO[] = [];
   currentDate: string = '';
 
   availableCultures: string[] = ['ONION', 'BEANS', 'POTATO'];
@@ -43,10 +42,6 @@ export class GardenComponent implements OnInit {
 
     this.cropService.listCrops(user.id, true).subscribe(crops => {
       this.activeCrops = crops;
-    });
-
-    this.cropService.listCrops(user.id, false).subscribe(crops => {
-      this.pastCrops = crops;
     });
   }
 
