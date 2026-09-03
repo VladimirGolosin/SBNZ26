@@ -31,7 +31,9 @@ export class CropCardComponent {
     POTATO: ['WEED_REMOVAL', 'HILLING', 'PEST_CONTROL', 'IRRIGATION'],
     TOMATO: ['WEED_REMOVAL', 'TYING', 'PEST_CONTROL', 'IRRIGATION'],
     ZUCCINI: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION'],
-    CORN: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION']
+    CORN: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION'],
+    GRAPE: ['PRUNING', 'COPPER_SULFATE_SPRAY', 'PEST_CONTROL', 'IRRIGATION'],
+    WATERMELON: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION']
   };
 
   cultureProblems: Record<string, string[]> = {
@@ -40,19 +42,21 @@ export class CropCardComponent {
     POTATO: ['POTATO_BLIGHT', 'COLORADO_POTATO_BEETLE'],
     TOMATO: ['TOMATO_BLIGHT', 'APHIDS'],
     ZUCCINI: ['POWDERY_MILDEW', 'APHIDS'],
-    CORN: ['CORN_MOLD', 'CORN_BORER']
+    CORN: ['CORN_MOLD', 'CORN_BORER'],
+    GRAPE: ['GRAPE_POWDERY_MILDEW', 'GRAPE_MOTH'],
+    WATERMELON: ['POWDERY_MILDEW', 'APHIDS']
   };
 
-    cultureMaxLevel: Record<string, number> = {
+  cultureMaxLevel: Record<string, number> = {
     ONION: 3,
     BEANS: 3,
     POTATO: 4,
     TOMATO: 4,
     ZUCCINI: 3,
-    CORN: 3
+    CORN: 3,
+    GRAPE: 4,
+    WATERMELON: 3
   };
-
-  
 
   constructor(private cropService: CropService, private snackBar: MatSnackBar) {}
 
@@ -60,12 +64,12 @@ export class CropCardComponent {
     return this.cultureActions[this.crop.cultureName] || [];
   }
 
-  get maxLevel(): number {
-    return this.cultureMaxLevel[this.crop.cultureName] || 3;
-  }
-
   get availableProblems(): string[] {
     return this.cultureProblems[this.crop.cultureName] || [];
+  }
+
+  get maxLevel(): number {
+    return this.cultureMaxLevel[this.crop.cultureName] || 3;
   }
 
   get hasHarvestReady(): boolean {

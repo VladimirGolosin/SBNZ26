@@ -31,6 +31,8 @@ public class CropService {
         maxLevels.put(CultureName.TOMATO, 4);
         maxLevels.put(CultureName.ZUCCINI, 3);
         maxLevels.put(CultureName.CORN, 3);
+        maxLevels.put(CultureName.GRAPE, 4);
+        maxLevels.put(CultureName.WATERMELON, 3);
     }
 
     public int getMaxLevel(CultureName cultureName) {
