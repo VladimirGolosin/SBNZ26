@@ -14,6 +14,7 @@ export interface CostProfitEntry {
   cultureName: string;
   status: string;
   size: number;
+  pricePerSqm: number;
   cost: number;
   revenue: number;
   profit: number;

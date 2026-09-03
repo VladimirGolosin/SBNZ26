@@ -1,0 +1,46 @@
+package garden_cep;
+
+import com.ftn.sbnz.model.WeatherDayInfo;
+import com.ftn.sbnz.model.CultureName;
+
+rule "Watermelon: critical time detected"
+    when
+        $avgTemp: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            average($w.getTemperature())
+        )
+        $avgRain: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            average($w.getRainfall())
+        )
+        $count: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            count($w)
+        )
+        eval( $count.intValue() >= 7 )
+        eval( $avgTemp.doubleValue() >= cultureThresholdProvider.getOptimalTemperature(CultureName.WATERMELON) * 1.5 )
+        eval( $avgRain.doubleValue() < cultureThresholdProvider.getOptimalWeeklyRainfall(CultureName.WATERMELON) / 7 * 0.75 )
+    then
+        criticalPeriodUpdater.updateCulture(CultureName.WATERMELON, true, currentDate);
+end
+
+rule "Watermelon: critical time ended"
+    when
+        $avgTemp: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            average($w.getTemperature())
+        )
+        $avgRain: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            average($w.getRainfall())
+        )
+        $count: Number() from accumulate(
+            $w: WeatherDayInfo() over window:time(7d),
+            count($w)
+        )
+        eval( !( $count.intValue() >= 7
+                 && $avgTemp.doubleValue() >= cultureThresholdProvider.getOptimalTemperature(CultureName.WATERMELON) * 1.5
+                 && $avgRain.doubleValue() < cultureThresholdProvider.getOptimalWeeklyRainfall(CultureName.WATERMELON) / 7 * 0.75 ) )
+    then
+        criticalPeriodUpdater.updateCulture(CultureName.WATERMELON, false, currentDate);
+end

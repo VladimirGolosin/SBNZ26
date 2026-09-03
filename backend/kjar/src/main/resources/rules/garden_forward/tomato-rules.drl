@@ -1,0 +1,113 @@
+package garden_forward;
+
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.ProblemName;
+import com.ftn.sbnz.model.SolutionName;
+import com.ftn.sbnz.model.CultureName;
+import com.ftn.sbnz.model.CultureStatus;
+import com.ftn.sbnz.model.Recommendation;
+import java.time.Month;
+
+rule "Tomato: weeding done -> step 2"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 1, isActive())
+        Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.MAY) from $c.actions
+    then
+        modify($c) { setLevel(2) }
+end
+
+rule "Tomato: tying done -> step 3"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 2, isActive())
+        Action(name == ActionName.TYING, done != null, done.month == Month.JUNE) from $c.actions
+    then
+        modify($c) { setLevel(3) }
+end
+
+rule "Tomato: pest control done -> step 4 (final)"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 3, isActive())
+        Action(name == ActionName.PEST_CONTROL, done != null, done.month == Month.JULY) from $c.actions
+    then
+        modify($c) { setLevel(4) }
+end
+
+rule "Tomato: missed weeding deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 1, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.JUNE) >= 0 )
+        not( Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.MAY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Tomato: missed tying deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 2, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.JULY) >= 0 )
+        not( Action(name == ActionName.TYING, done != null, done.month == Month.JUNE) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Tomato: missed pest control deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 3, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.AUGUST) >= 0 )
+        not( Action(name == ActionName.PEST_CONTROL, done != null, done.month == Month.JULY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Tomato: weeding due reminder"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 1, isActive())
+        eval( currentDate.getMonth() == Month.MAY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Weeding must be done by the end of May.", ActionName.WEED_REMOVAL));
+end
+
+rule "Tomato: tying due reminder"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 2, isActive())
+        eval( currentDate.getMonth() == Month.JUNE )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Tying must be done by the end of June.", ActionName.TYING));
+end
+
+rule "Tomato: pest control due reminder"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, level == 3, isActive())
+        eval( currentDate.getMonth() == Month.JULY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Pest protection must be applied by the end of July.", ActionName.PEST_CONTROL));
+end
+
+rule "Tomato: blight reported"
+    when
+        Crop(cultureName == CultureName.TOMATO, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.TOMATO_BLIGHT, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Tomato blight reported - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE, ProblemName.TOMATO_BLIGHT));
+end
+
+rule "Tomato: aphids reported"
+    when
+        Crop(cultureName == CultureName.TOMATO, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.APHIDS, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Aphids reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE, ProblemName.APHIDS));
+end
+
+rule "Tomato: harvest ready"
+    when
+        $c: Crop(cultureName == CultureName.TOMATO, isActive())
+        eval( currentDate.getMonth().compareTo(Month.JULY) >= 0 )
+    then
+        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "It's time to harvest the tomatoes."));
+end

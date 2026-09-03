@@ -157,9 +157,9 @@ public class CropController {
     }
 
     @PostMapping("/{id}/collect")
-    public ResponseEntity<?> collectCrop(@PathVariable Long id) {
+    public ResponseEntity<?> collectCrop(@PathVariable Long id, @RequestParam(defaultValue = "false") boolean confirmed) {
         try {
-            Crop crop = cropService.collectCrop(id, clockService.getCurrentDate());
+            Crop crop = cropService.collectCrop(id, clockService.getCurrentDate(), confirmed);
             CropStateDTO result = cropRuleEvaluationService.evaluateCropRules(crop, clockService.getCurrentDate());
             return ResponseEntity.ok(result);
         } catch (IllegalArgumentException | IllegalStateException e) {

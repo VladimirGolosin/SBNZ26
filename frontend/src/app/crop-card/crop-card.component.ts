@@ -28,13 +28,34 @@ export class CropCardComponent {
   cultureActions: Record<string, string[]> = {
     ONION: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION'],
     BEANS: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION'],
-    POTATO: ['WEED_REMOVAL', 'HILLING', 'PEST_CONTROL', 'IRRIGATION']
+    POTATO: ['WEED_REMOVAL', 'HILLING', 'PEST_CONTROL', 'IRRIGATION'],
+    TOMATO: ['WEED_REMOVAL', 'TYING', 'PEST_CONTROL', 'IRRIGATION'],
+    ZUCCINI: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION'],
+    CORN: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION'],
+    GRAPE: ['PRUNING', 'COPPER_SULFATE_SPRAY', 'PEST_CONTROL', 'IRRIGATION'],
+    WATERMELON: ['WEED_REMOVAL', 'FERTILIZATION', 'IRRIGATION']
   };
 
   cultureProblems: Record<string, string[]> = {
     ONION: ['DOWNY_MILDEW', 'ONION_FLY'],
     BEANS: ['BEAN_LEAF_SPOT', 'APHIDS'],
-    POTATO: ['POTATO_BLIGHT', 'COLORADO_POTATO_BEETLE']
+    POTATO: ['POTATO_BLIGHT', 'COLORADO_POTATO_BEETLE'],
+    TOMATO: ['TOMATO_BLIGHT', 'APHIDS'],
+    ZUCCINI: ['POWDERY_MILDEW', 'APHIDS'],
+    CORN: ['CORN_MOLD', 'CORN_BORER'],
+    GRAPE: ['GRAPE_POWDERY_MILDEW', 'GRAPE_MOTH'],
+    WATERMELON: ['POWDERY_MILDEW', 'APHIDS']
+  };
+
+  cultureMaxLevel: Record<string, number> = {
+    ONION: 3,
+    BEANS: 3,
+    POTATO: 4,
+    TOMATO: 4,
+    ZUCCINI: 3,
+    CORN: 3,
+    GRAPE: 4,
+    WATERMELON: 3
   };
 
   constructor(private cropService: CropService, private snackBar: MatSnackBar) {}
@@ -45,6 +66,10 @@ export class CropCardComponent {
 
   get availableProblems(): string[] {
     return this.cultureProblems[this.crop.cultureName] || [];
+  }
+
+  get maxLevel(): number {
+    return this.cultureMaxLevel[this.crop.cultureName] || 3;
   }
 
   get hasHarvestReady(): boolean {
@@ -110,12 +135,27 @@ export class CropCardComponent {
     if (!confirm(`Collect this ${this.crop.cultureName}?`)) {
       return;
     }
-    this.cropService.collectCrop(this.crop.id).subscribe({
+    this.cropService.collectCrop(this.crop.id, false).subscribe({
       next: () => {
         this.notify('Crop collected');
         this.updated.emit();
       },
-      error: (err) => alert(err?.error || 'Could not collect crop')
+      error: (err) => {
+        const message: string = err?.error || '';
+        if (message.includes('has not completed all growth stages')) {
+          if (confirm(message + '\n\nCollect anyway?')) {
+            this.cropService.collectCrop(this.crop.id, true).subscribe({
+              next: () => {
+                this.notify('Crop collected as INF (incomplete growth)');
+                this.updated.emit();
+              },
+              error: (err2) => alert(err2?.error || 'Could not collect crop')
+            });
+          }
+        } else {
+          alert(message || 'Could not collect crop');
+        }
+      }
     });
   }
 

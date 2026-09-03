@@ -12,7 +12,7 @@
   <div class="card-info">
     <p>Size: {{ crop.size }} m²</p>
     <p>Planted: {{ crop.plantedDate | date:'dd.MM.yyyy' }}</p>
-    <p>Level: {{ crop.level }} — Status: {{ formatEnum(crop.status) }}</p>
+    <p>Level: {{ crop.level }} / {{ maxLevel }} — Status: {{ formatEnum(crop.status) }}</p>
   </div>
 
   <ng-container *ngIf="!readOnly">

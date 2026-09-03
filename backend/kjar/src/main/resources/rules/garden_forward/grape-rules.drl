@@ -1,0 +1,113 @@
+package garden_forward;
+
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.ProblemName;
+import com.ftn.sbnz.model.SolutionName;
+import com.ftn.sbnz.model.CultureName;
+import com.ftn.sbnz.model.CultureStatus;
+import com.ftn.sbnz.model.Recommendation;
+import java.time.Month;
+
+rule "Grape: pruning done -> step 2"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 1, isActive())
+        Action(name == ActionName.PRUNING, done != null, done.month == Month.MARCH) from $c.actions
+    then
+        modify($c) { setLevel(2) }
+end
+
+rule "Grape: copper sulfate spray done -> step 3"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 2, isActive())
+        Action(name == ActionName.COPPER_SULFATE_SPRAY, done != null, done.month == Month.MAY) from $c.actions
+    then
+        modify($c) { setLevel(3) }
+end
+
+rule "Grape: insect protection done -> step 4 (final)"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 3, isActive())
+        Action(name == ActionName.PEST_CONTROL, done != null, done.month == Month.JULY) from $c.actions
+    then
+        modify($c) { setLevel(4) }
+end
+
+rule "Grape: missed pruning deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 1, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.APRIL) >= 0 )
+        not( Action(name == ActionName.PRUNING, done != null, done.month == Month.MARCH) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Grape: missed copper sulfate spray deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 2, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.JUNE) >= 0 )
+        not( Action(name == ActionName.COPPER_SULFATE_SPRAY, done != null, done.month == Month.MAY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Grape: missed insect protection deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 3, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.AUGUST) >= 0 )
+        not( Action(name == ActionName.PEST_CONTROL, done != null, done.month == Month.JULY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Grape: pruning due reminder"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 1, isActive())
+        eval( currentDate.getMonth() == Month.MARCH )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Pruning must be done by the end of March.", ActionName.PRUNING));
+end
+
+rule "Grape: copper sulfate spray due reminder"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 2, isActive())
+        eval( currentDate.getMonth() == Month.MAY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Copper sulfate spray must be applied by the end of May.", ActionName.COPPER_SULFATE_SPRAY));
+end
+
+rule "Grape: insect protection due reminder"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, level == 3, isActive())
+        eval( currentDate.getMonth() == Month.JULY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Insect protection must be applied by the end of July.", ActionName.PEST_CONTROL));
+end
+
+rule "Grape: powdery mildew reported"
+    when
+        Crop(cultureName == CultureName.GRAPE, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.GRAPE_POWDERY_MILDEW, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Grape powdery mildew reported - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE, ProblemName.GRAPE_POWDERY_MILDEW));
+end
+
+rule "Grape: moth reported"
+    when
+        Crop(cultureName == CultureName.GRAPE, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.GRAPE_MOTH, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Grape moth reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE, ProblemName.GRAPE_MOTH));
+end
+
+rule "Grape: harvest ready"
+    when
+        $c: Crop(cultureName == CultureName.GRAPE, isActive())
+        eval( currentDate.getMonth().compareTo(Month.SEPTEMBER) >= 0 )
+    then
+        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "It's time to harvest the grapes."));
+end
