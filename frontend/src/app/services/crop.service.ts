@@ -53,8 +53,10 @@ export class CropService {
     return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/problems/${problemId}/resolved`, null);
   }
 
-  collectCrop(cropId: number): Observable<CropStateDTO> {
-    return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/collect`, null);
+    collectCrop(cropId: number, confirmed: boolean = false): Observable<CropStateDTO> {
+    return this.http.post<CropStateDTO>(`${environment.api}crops/${cropId}/collect`, null, {
+      params: { confirmed }
+    });
   }
 
   failCrop(cropId: number): Observable<CropStateDTO> {

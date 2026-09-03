@@ -38,22 +38,6 @@ public class ServiceApplication  {
 		return kContainer;
 	}
 
-	@Bean
-	public CommandLineRunner testForwardChainRunner(KieContainer kieContainer) {
-		return args -> {
-			KieSession kSession = kieContainer.newKieSession("gardenForwardKsession");
-
-			Crop crop = new Crop();
-			crop.setCultureName(CultureName.TOMATO);
-			crop.setStatus(CultureStatus.OK);
-			crop.setLevel(1);
-			crop.setSize(10);
-			crop.setNumber(5);
-
-			kSession.insert(crop);
-			kSession.fireAllRules();
-			kSession.dispose();
-		};
-	}
+	
 	
 }

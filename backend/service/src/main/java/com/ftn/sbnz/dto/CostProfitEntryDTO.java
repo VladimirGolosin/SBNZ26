@@ -9,6 +9,7 @@ public class CostProfitEntryDTO {
     private CultureName cultureName;
     private CultureStatus status;
     private int size;
+    private double pricePerSqm;
     private double cost;
     private double revenue;
     private double profit;
@@ -16,11 +17,12 @@ public class CostProfitEntryDTO {
     public CostProfitEntryDTO() {
     }
 
-    public CostProfitEntryDTO(Long cropId, CultureName cultureName, CultureStatus status, int size, double cost, double revenue, double profit) {
+    public CostProfitEntryDTO(Long cropId, CultureName cultureName, CultureStatus status, int size, double pricePerSqm, double cost, double revenue, double profit) {
         this.cropId = cropId;
         this.cultureName = cultureName;
         this.status = status;
         this.size = size;
+        this.pricePerSqm = pricePerSqm;
         this.cost = cost;
         this.revenue = revenue;
         this.profit = profit;
@@ -56,6 +58,14 @@ public class CostProfitEntryDTO {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public double getPricePerSqm() {
+        return pricePerSqm;
+    }
+
+    public void setPricePerSqm(double pricePerSqm) {
+        this.pricePerSqm = pricePerSqm;
     }
 
     public double getCost() {

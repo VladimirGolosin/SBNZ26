@@ -46,16 +46,18 @@ public class ReportService {
                 }
             }
 
+            double pricePerSqm = pricingService.getPricePerSqm(crop.getCultureName());
+
             double revenue = 0;
             if (crop.getStatus() == CultureStatus.COLLECTED) {
-                revenue = crop.getSize() * pricingService.getPricePerSqm(crop.getCultureName());
+                revenue = crop.getSize() * pricePerSqm;
             } else if (crop.getStatus() == CultureStatus.INF_COLLECTED) {
-                revenue = 0.5 * crop.getSize() * pricingService.getPricePerSqm(crop.getCultureName());
+                revenue = 0.5 * crop.getSize() * pricePerSqm;
             }
 
             double profit = revenue - cost;
 
-            entries.add(new CostProfitEntryDTO(crop.getId(), crop.getCultureName(), crop.getStatus(), crop.getSize(), cost, revenue, profit));
+            entries.add(new CostProfitEntryDTO(crop.getId(), crop.getCultureName(), crop.getStatus(), crop.getSize(), pricePerSqm, cost, revenue, profit));
             totalCost += cost;
             totalRevenue += revenue;
         }

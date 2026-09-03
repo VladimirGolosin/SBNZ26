@@ -1,0 +1,88 @@
+package garden_forward;
+
+import com.ftn.sbnz.model.Crop;
+import com.ftn.sbnz.model.Action;
+import com.ftn.sbnz.model.ActionName;
+import com.ftn.sbnz.model.Problem;
+import com.ftn.sbnz.model.ProblemName;
+import com.ftn.sbnz.model.SolutionName;
+import com.ftn.sbnz.model.CultureName;
+import com.ftn.sbnz.model.CultureStatus;
+import com.ftn.sbnz.model.Recommendation;
+import java.time.Month;
+
+rule "Corn: weeding done -> step 2"
+    when
+        $c: Crop(cultureName == CultureName.CORN, level == 1, isActive())
+        Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.MAY) from $c.actions
+    then
+        modify($c) { setLevel(2) }
+end
+
+rule "Corn: fertilizing done -> step 3 (final)"
+    when
+        $c: Crop(cultureName == CultureName.CORN, level == 2, isActive())
+        Action(name == ActionName.FERTILIZATION, done != null, done.month == Month.JULY) from $c.actions
+    then
+        modify($c) { setLevel(3) }
+end
+
+rule "Corn: missed weeding deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.CORN, level == 1, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.JUNE) >= 0 )
+        not( Action(name == ActionName.WEED_REMOVAL, done != null, done.month == Month.MAY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Corn: missed fertilizing deadline -> INF"
+    when
+        $c: Crop(cultureName == CultureName.CORN, level == 2, isActive(), status != CultureStatus.INF)
+        eval( currentDate.getMonth().compareTo(Month.AUGUST) >= 0 )
+        not( Action(name == ActionName.FERTILIZATION, done != null, done.month == Month.JULY) from $c.actions )
+    then
+        modify($c) { setStatus(CultureStatus.INF) }
+end
+
+rule "Corn: weeding due reminder"
+    when
+        $c: Crop(cultureName == CultureName.CORN, level == 1, isActive())
+        eval( currentDate.getMonth() == Month.MAY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Weeding must be done by the end of May.", ActionName.WEED_REMOVAL));
+end
+
+rule "Corn: fertilizing due reminder"
+    when
+        $c: Crop(cultureName == CultureName.CORN, level == 2, isActive())
+        eval( currentDate.getMonth() == Month.JULY )
+    then
+        insert(new Recommendation(Recommendation.Type.ACTION_DUE, "Fertilizing must be done by the end of July.", ActionName.FERTILIZATION));
+end
+
+rule "Corn: mold reported"
+    when
+        Crop(cultureName == CultureName.CORN, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.CORN_MOLD, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_FUNGICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Corn mold reported - applying a fungicide is recommended.", SolutionName.APPLY_FUNGICIDE, ProblemName.CORN_MOLD));
+end
+
+rule "Corn: borer reported"
+    when
+        Crop(cultureName == CultureName.CORN, isActive(), $problems: problems)
+        $p: Problem(name == ProblemName.CORN_BORER, addressed == null) from $problems
+    then
+        modify($p) { setProvidedSolution(SolutionName.APPLY_INSECTICIDE) }
+        insert(new Recommendation(Recommendation.Type.PROBLEM_SOLUTION, "Corn borer reported - applying an insecticide is recommended.", SolutionName.APPLY_INSECTICIDE, ProblemName.CORN_BORER));
+end
+
+rule "Corn: harvest ready"
+    when
+        $c: Crop(cultureName == CultureName.CORN, isActive())
+        eval( currentDate.getMonth().compareTo(Month.AUGUST) >= 0 )
+    then
+        insert(new Recommendation(Recommendation.Type.HARVEST_READY, "It's time to harvest the corn."));
+end

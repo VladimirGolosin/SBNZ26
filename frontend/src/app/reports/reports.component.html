@@ -26,20 +26,26 @@
 
   <table class="cost-table" *ngIf="costProfitReport && costProfitReport.entries.length > 0">
     <thead>
-      <tr>
+        <tr>
+            <th>Culture</th>
+            <th>Status</th>
+            <th>Price/m²</th>
         <th>Size</th>
-        <th>Culture</th>
-        <th>Status</th>
+        
+        
+        
         <th>Cost</th>
         <th>Revenue</th>
-        <th>Profit</th>
+        <th>Profit/Deficit</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let entry of costProfitReport.entries">
-        <td>{{ entry.size }} m²</td>
+        
         <td>{{ formatEnum(entry.cultureName) }}</td>
         <td>{{ formatEnum(entry.status) }}</td>
+        <td>${{ entry.pricePerSqm | number:'1.2-2' }}</td>
+        <td>{{ entry.size }} m²</td>
         <td>${{ entry.cost | number:'1.2-2' }}</td>
         <td>${{ entry.revenue | number:'1.2-2' }}</td>
         <td>${{ entry.profit | number:'1.2-2' }}</td>
