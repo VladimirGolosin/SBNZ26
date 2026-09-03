@@ -33,16 +33,14 @@ export class ReportsComponent implements OnInit {
       this.years = years;
       if (years.length > 0) {
         this.selectedYear = years[years.length - 1];
-        this.loadWeatherReport();
+        this.loadReports();
       }
     });
+  }
 
-    const user = this.session.getUser();
-    if (user) {
-      this.reportService.getCostProfitReport(user.id).subscribe(report => {
-        this.costProfitReport = report;
-      });
-    }
+  loadReports(): void {
+    this.loadWeatherReport();
+    this.loadCostProfitReport();
   }
 
   loadWeatherReport(): void {
@@ -52,6 +50,19 @@ export class ReportsComponent implements OnInit {
     this.reportService.getWeatherReport(this.selectedYear).subscribe(data => {
       this.weatherData = data;
       setTimeout(() => this.renderChart(), 0);
+    });
+  }
+
+  loadCostProfitReport(): void {
+    if (this.selectedYear === null) {
+      return;
+    }
+    const user = this.session.getUser();
+    if (!user) {
+      return;
+    }
+    this.reportService.getCostProfitReport(user.id, this.selectedYear).subscribe(report => {
+      this.costProfitReport = report;
     });
   }
 

@@ -29,7 +29,7 @@ public class ReportController {
     }
 
     @GetMapping("/cost-profit")
-    public ResponseEntity<?> getCostProfitReport(@RequestParam Long userId) {
-        return ResponseEntity.ok(reportService.generateCostProfitReport(userId));
+    public ResponseEntity<?> getCostProfitReport(@RequestParam Long userId, @RequestParam int year) {
+        return ResponseEntity.ok(reportService.generateCostProfitReport(userId, year));
     }
 }

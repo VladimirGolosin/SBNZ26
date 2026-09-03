@@ -13,6 +13,7 @@ export interface CostProfitEntry {
   cropId: number;
   cultureName: string;
   status: string;
+  size: number;
   cost: number;
   revenue: number;
   profit: number;
@@ -42,9 +43,9 @@ export class ReportService {
     });
   }
 
-  getCostProfitReport(userId: number): Observable<CostProfitReport> {
+  getCostProfitReport(userId: number, year: number): Observable<CostProfitReport> {
     return this.http.get<CostProfitReport>(`${environment.api}reports/cost-profit`, {
-      params: { userId }
+      params: { userId, year }
     });
   }
 }

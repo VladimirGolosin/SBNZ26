@@ -22,7 +22,7 @@ public class ReportService {
         this.pricingService = pricingService;
     }
 
-    public CostProfitReportDTO generateCostProfitReport(Long userId) {
+    public CostProfitReportDTO generateCostProfitReport(Long userId, int year) {
         List<Crop> crops = new ArrayList<>();
         crops.addAll(cropService.findCropsForUser(userId, true));
         crops.addAll(cropService.findCropsForUser(userId, false));
@@ -32,6 +32,10 @@ public class ReportService {
         double totalRevenue = 0;
 
         for (Crop crop : crops) {
+            if (crop.getPlantedDate() == null || crop.getPlantedDate().getYear() != year) {
+                continue;
+            }
+
             double cost = 0;
             for (Action action : crop.getActions()) {
                 cost += pricingService.getActionCost(action.getName());
@@ -51,7 +55,7 @@ public class ReportService {
 
             double profit = revenue - cost;
 
-            entries.add(new CostProfitEntryDTO(crop.getId(), crop.getCultureName(), crop.getStatus(), cost, revenue, profit));
+            entries.add(new CostProfitEntryDTO(crop.getId(), crop.getCultureName(), crop.getStatus(), crop.getSize(), cost, revenue, profit));
             totalCost += cost;
             totalRevenue += revenue;
         }

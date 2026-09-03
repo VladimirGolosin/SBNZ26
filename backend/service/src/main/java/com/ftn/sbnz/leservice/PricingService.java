@@ -16,46 +16,46 @@ public class PricingService {
     private final Map<CultureName, Double> pricePerSqm = new EnumMap<>(CultureName.class);
 
     public PricingService() {
-        actionCosts.put(ActionName.WEED_REMOVAL, 5.0);
-        actionCosts.put(ActionName.FERTILIZATION, 8.0);
-        actionCosts.put(ActionName.IRRIGATION, 3.0);
-        actionCosts.put(ActionName.HILLING, 6.0);
-        actionCosts.put(ActionName.PEST_CONTROL, 10.0);
-        actionCosts.put(ActionName.PRUNING, 7.0);
-        actionCosts.put(ActionName.TYING, 4.0);
-        actionCosts.put(ActionName.TREE_WHITEWASHING, 9.0);
-        actionCosts.put(ActionName.COPPER_SULFATE_SPRAY, 12.0);
+        actionCosts.put(ActionName.WEED_REMOVAL, 8.0);
+        actionCosts.put(ActionName.FERTILIZATION, 15.0);
+        actionCosts.put(ActionName.IRRIGATION, 5.0);
+        actionCosts.put(ActionName.HILLING, 10.0);
+        actionCosts.put(ActionName.PEST_CONTROL, 18.0);
+        actionCosts.put(ActionName.PRUNING, 12.0);
+        actionCosts.put(ActionName.TYING, 6.0);
+        actionCosts.put(ActionName.TREE_WHITEWASHING, 14.0);
+        actionCosts.put(ActionName.COPPER_SULFATE_SPRAY, 20.0);
 
-        solutionCosts.put(SolutionName.APPLY_FUNGICIDE, 10.0);
-        solutionCosts.put(SolutionName.APPLY_INSECTICIDE, 9.0);
-        solutionCosts.put(SolutionName.APPLY_FERTILIZATION, 8.0);
-        solutionCosts.put(SolutionName.REMOVE_INFECTED_LEAVES, 4.0);
-        solutionCosts.put(SolutionName.REMOVE_INFECTED_FRUITS, 4.0);
-        solutionCosts.put(SolutionName.PRUNE_INFECTED_BRANCHES, 6.0);
-        solutionCosts.put(SolutionName.ADD_PROTECTION, 7.0);
+        solutionCosts.put(SolutionName.APPLY_FUNGICIDE, 18.0);
+        solutionCosts.put(SolutionName.APPLY_INSECTICIDE, 16.0);
+        solutionCosts.put(SolutionName.APPLY_FERTILIZATION, 15.0);
+        solutionCosts.put(SolutionName.REMOVE_INFECTED_LEAVES, 7.0);
+        solutionCosts.put(SolutionName.REMOVE_INFECTED_FRUITS, 7.0);
+        solutionCosts.put(SolutionName.PRUNE_INFECTED_BRANCHES, 10.0);
+        solutionCosts.put(SolutionName.ADD_PROTECTION, 12.0);
 
-        pricePerSqm.put(CultureName.ONION, 3.5);
-        pricePerSqm.put(CultureName.BEANS, 4.0);
-        pricePerSqm.put(CultureName.TOMATO, 4.5);
-        pricePerSqm.put(CultureName.POTATO, 2.5);
-        pricePerSqm.put(CultureName.ZUCCINI, 3.0);
-        pricePerSqm.put(CultureName.CORN, 2.0);
-        pricePerSqm.put(CultureName.CHERRY, 6.0);
-        pricePerSqm.put(CultureName.APPLE, 5.5);
-        pricePerSqm.put(CultureName.PLUM, 5.0);
-        pricePerSqm.put(CultureName.WATERMELON, 3.5);
-        pricePerSqm.put(CultureName.GRAPE, 7.0);
+        pricePerSqm.put(CultureName.ONION, 1.20);
+        pricePerSqm.put(CultureName.BEANS, 1.50);
+        pricePerSqm.put(CultureName.TOMATO, 1.80);
+        pricePerSqm.put(CultureName.POTATO, 0.90);
+        pricePerSqm.put(CultureName.ZUCCINI, 1.10);
+        pricePerSqm.put(CultureName.CORN, 0.70);
+        pricePerSqm.put(CultureName.CHERRY, 3.50);
+        pricePerSqm.put(CultureName.APPLE, 3.00);
+        pricePerSqm.put(CultureName.PLUM, 2.80);
+        pricePerSqm.put(CultureName.WATERMELON, 1.30);
+        pricePerSqm.put(CultureName.GRAPE, 4.00);
     }
 
     public double getActionCost(ActionName action) {
-        return actionCosts.getOrDefault(action, 5.0);
+        return actionCosts.getOrDefault(action, 10.0);
     }
 
     public double getSolutionCost(SolutionName solution) {
-        return solutionCosts.getOrDefault(solution, 5.0);
+        return solutionCosts.getOrDefault(solution, 12.0);
     }
 
     public double getPricePerSqm(CultureName culture) {
-        return pricePerSqm.getOrDefault(culture, 3.0);
+        return pricePerSqm.getOrDefault(culture, 1.50);
     }
 }

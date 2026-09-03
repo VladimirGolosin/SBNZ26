@@ -3,7 +3,7 @@
 
   <div class="year-select">
     <label>Year:</label>
-    <select [(ngModel)]="selectedYear" (ngModelChange)="loadWeatherReport()">
+    <select [(ngModel)]="selectedYear" (ngModelChange)="loadReports()">
       <option *ngFor="let year of years" [value]="year">{{ year }}</option>
     </select>
   </div>
@@ -15,15 +15,19 @@
   <h2>Cost &amp; Profit Report</h2>
 
   <div class="totals" *ngIf="costProfitReport">
-    <p>Total Cost: {{ costProfitReport.totalCost | number:'1.2-2' }}</p>
-    <p>Total Revenue: {{ costProfitReport.totalRevenue | number:'1.2-2' }}</p>
-    <p>Total Profit: {{ costProfitReport.totalProfit | number:'1.2-2' }}</p>
+    <p>Total Cost: ${{ costProfitReport.totalCost | number:'1.2-2' }}</p>
+    <p>Total Revenue: ${{ costProfitReport.totalRevenue | number:'1.2-2' }}</p>
+    <p>Total Profit: ${{ costProfitReport.totalProfit | number:'1.2-2' }}</p>
   </div>
 
-  <table class="cost-table" *ngIf="costProfitReport">
+  <div *ngIf="costProfitReport && costProfitReport.entries.length === 0">
+    No crops planted in {{ selectedYear }}.
+  </div>
+
+  <table class="cost-table" *ngIf="costProfitReport && costProfitReport.entries.length > 0">
     <thead>
       <tr>
-        <th>Crop</th>
+        <th>Size</th>
         <th>Culture</th>
         <th>Status</th>
         <th>Cost</th>
@@ -33,12 +37,12 @@
     </thead>
     <tbody>
       <tr *ngFor="let entry of costProfitReport.entries">
-        <td>#{{ entry.cropId }}</td>
+        <td>{{ entry.size }} m²</td>
         <td>{{ formatEnum(entry.cultureName) }}</td>
         <td>{{ formatEnum(entry.status) }}</td>
-        <td>{{ entry.cost | number:'1.2-2' }}</td>
-        <td>{{ entry.revenue | number:'1.2-2' }}</td>
-        <td>{{ entry.profit | number:'1.2-2' }}</td>
+        <td>${{ entry.cost | number:'1.2-2' }}</td>
+        <td>${{ entry.revenue | number:'1.2-2' }}</td>
+        <td>${{ entry.profit | number:'1.2-2' }}</td>
       </tr>
     </tbody>
   </table>
