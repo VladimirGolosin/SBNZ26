@@ -1,0 +1,41 @@
+.page-container {
+  padding: 30px 40px;
+}
+
+.year-select {
+  margin-bottom: 20px;
+}
+
+.year-select select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-left: 8px;
+}
+
+.chart-container {
+  max-width: 700px;
+  margin-bottom: 40px;
+}
+
+.totals p {
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+.cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.cost-table th,
+.cost-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.cost-table th {
+  background-color: #f0f0f0;
+}
